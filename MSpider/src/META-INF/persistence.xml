@@ -4,23 +4,23 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="MSpider">
 
-		<class>com.mifmif.networking.mspider.model.URL</class>
-		<class>com.mifmif.networking.mspider.model.URLPattern</class>
 		<class>com.mifmif.networking.mspider.model.Field</class>
 		<class>com.mifmif.networking.mspider.model.Payload</class>
+		<class>com.mifmif.networking.mspider.model.URL</class>
+		<class>com.mifmif.networking.mspider.model.URLPattern</class>
 		<class>com.mifmif.networking.mspider.model.Website</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mspider" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mspider_bikhir" />
 			<property name="javax.persistence.jdbc.user" value="root" />
-			<property name="javax.persistence.jdbc.password" value="toor" />
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="javax.persistence.jdbc.password" value="" />
+			<property name="eclipselink.ddl-generation" value="create-tables" />
 			<property name="eclipselink.create-ddl-jdbc-file-name"
 				value="createDDL_ddlGeneration.jdbc" />
 			<property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc" />
 			<property name="eclipselink.application-location" value="D:/MSpider_DDL" />
 			<property name="eclipselink.ddl-generation.output-mode"
-				value="both" />
+				value="database" />
 		</properties>
 
 	</persistence-unit>
