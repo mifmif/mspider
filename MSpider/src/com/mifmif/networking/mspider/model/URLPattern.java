@@ -21,9 +21,15 @@ import javax.persistence.UniqueConstraint;
 
 import com.sun.istack.Nullable;
 
+/**
+ * @author y.mifrah
+ *
+ */
 @Entity
-@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
-@NamedQueries({ @NamedQuery(name = "UrlPattern.find", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
+@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE",
+		"ASSOCIATED_WEBSITE_ID" }) })
+@NamedQueries({
+		@NamedQuery(name = "UrlPattern.find", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
 		@NamedQuery(name = "UrlPattern.findByWebsite", query = "SELECT u FROM URLPattern u WHERE u.website = :website ") })
 public class URLPattern {
 
@@ -130,6 +136,15 @@ public class URLPattern {
 
 	public void setUrlName(String urlName) {
 		this.urlName = urlName;
+	}
+
+	/**
+	 * True if the page contain a payload that will be extracted and saved ,
+	 * false if the page just link to other page and do not contain payload that
+	 * will be persisted
+	 */
+	public boolean hasPayloadContent() {
+		return getFields().size() != 0;
 	}
 
 	public static class URLPatternBuilder {
