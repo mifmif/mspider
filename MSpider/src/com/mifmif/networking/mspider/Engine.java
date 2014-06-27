@@ -40,6 +40,8 @@ public class Engine {
 			if (isVisitedUrl(currUrlValue))
 				continue;
 			System.out.println(currUrlValue);
+			if (!isValidUrl(currUrlValue))
+				continue;
 			URL currentUrl = prepareUrl(currUrlValue);
 			UrlLoader loader = new UrlLoader(currentUrl);
 			try {
@@ -51,13 +53,24 @@ public class Engine {
 			}
 			for (Payload payload : currentUrl.getPayloads())
 				urlService.savePayload(payload);
-			urlService.updateUrl(currentUrl);
+			if (currentUrl.getPayloads().size() != 0)
+				urlService.updateUrl(currentUrl);
+
+			else
+				urlService.removeUrl(currentUrl);
 			addTovisitedUrls(currUrlValue);
 			List<String> urlsInPages = loader.getUrlsInPage();
 			List<String> nextUrls = urlService.filterUrls(website, currentUrl.getUrl(), urlsInPages);
 			nextUrls.removeAll(visitedUrls);
 			queueUrls.addAll(nextUrls);
 		}
+	}
+
+	private boolean isValidUrl(String currUrlValue) {
+		boolean isValid = urlService.isValidUrl(website, currUrlValue);
+		if (!isValid)
+			System.out.println("The url " + currUrlValue + " is already saved or no pattern match it");
+		return isValid;
 	}
 
 	private boolean isVisitedUrl(String url) {

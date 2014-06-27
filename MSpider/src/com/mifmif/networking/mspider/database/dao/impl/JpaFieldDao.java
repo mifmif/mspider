@@ -13,7 +13,7 @@ public class JpaFieldDao extends JpaDao<Long, Field> implements FieldDao {
 
 	@Override
 	public List<Field> findByUrlPattern(String urlPattern) {
-		List<Field> found = entityManager.createNamedQuery("Field.find", Field.class).setParameter("urlPattern", urlPattern).getResultList();
+		List<Field> found = entityManager.createNamedQuery("Field.findByUrlPattern", Field.class).setParameter("urlPattern", urlPattern).getResultList();
 		return found;
 	}
 

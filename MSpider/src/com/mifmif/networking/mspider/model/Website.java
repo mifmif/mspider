@@ -13,8 +13,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(name = "WEBSITE", uniqueConstraints = { @UniqueConstraint(columnNames = { "HOST", "START_PAGE" }) })
 @NamedQueries({ @NamedQuery(name = "Website.find", query = "SELECT w FROM Website w WHERE w.host = :host ") })
 public class Website {
 	@Id
@@ -22,12 +25,13 @@ public class Website {
 	@GeneratedValue(generator = "WEB_SITE_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
-
+	@Column(name = "HOST")
 	private String host;
 	/**
 	 * <code>/index.php</code> or just / or any page that would be used as the
 	 * starting point
 	 */
+	@Column(name = "START_PAGE")
 	private String startPage = "/";
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "website")
 	private List<URLPattern> patterns;
