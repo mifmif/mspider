@@ -21,7 +21,7 @@ import javax.persistence.SequenceGenerator;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "Field.find", query = "SELECT f FROM Field f WHERE f.pattern.urlPattern = :urlPattern ") })
+@NamedQueries({ @NamedQuery(name = "Field.findByUrlPattern", query = "SELECT f FROM Field f WHERE f.pattern.urlPattern = :urlPattern ") })
 public class Field {
 	@Id
 	@SequenceGenerator(name = "FIELD_SEQ_GEN", sequenceName = "FIELD_SEQ_GEN")
