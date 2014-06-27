@@ -41,6 +41,7 @@ public class URLMapperService {
 	 * @return
 	 */
 	public List<String> filterUrls(Website website, String fromUrl, List<String> urls) {
+		urls = removeHostFromUrl(website.getHost(), urls);
 		URLPattern fromPattern = findUrlPatternByUrl(website, fromUrl);
 		List<URLPattern> excludedPatterns = website.getExcludedPatterns();
 		List<URLPattern> toUrlsPattern = fromPattern.getNextUrls();
@@ -57,6 +58,17 @@ public class URLMapperService {
 			}
 		}
 		return filteredUrls;
+	}
+
+	private List<String> removeHostFromUrl(String host, List<String> urls) {
+		List<String> resultUrls = new ArrayList<String>();
+		for (String url : urls) {
+			if (url.startsWith(host)) {
+				url = url.replace(host, "");
+			}
+			resultUrls.add(url);
+		}
+		return resultUrls;
 	}
 
 	public String getHostUrl() {
@@ -83,12 +95,28 @@ public class URLMapperService {
 		return url;
 	}
 
-	public URL prepareUrl(Website website, String urlValue) {
+	/**
+	 * Check if the url is already exist in the database or if there is no pattern that matches
+	 * this url
+	 * 
+	 * @return
+	 */
+	public boolean isValidUrl(Website website, String urlValue) {
+
+		URL existedUrl = findUrlByWebsiteAndValue(website, urlValue);
+		if (existedUrl != null)
+			return false;
 		URLPattern pattern = findUrlPatternByUrl(website, urlValue);
 		if (pattern == null)
-			return null;
+			return false;
+		return true;
+	}
+
+	public URL prepareUrl(Website website, String urlValue) {
+		URLPattern pattern = findUrlPatternByUrl(website, urlValue);
 		URL url = new URL(pattern, urlValue);
-		urlDao.persist(url);
+		if (pattern.hasPayloadContent())
+			urlDao.persist(url);
 		return url;
 	}
 
@@ -99,5 +127,10 @@ public class URLMapperService {
 	public void savePayload(Payload payload) {
 		payloadDao.persist(payload);
 
+	}
+
+	public void removeUrl(URL currentUrl) {
+		System.out.println("DELETE " + currentUrl);
+		urlDao.remove(currentUrl);
 	}
 }
