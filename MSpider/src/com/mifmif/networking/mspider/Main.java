@@ -31,7 +31,8 @@ public class Main {
 		URLPattern questionsHome = new URLPattern(website, "/questions", "HomePage");
 		URLPattern nextQuestionsPage = new URLPattern(website, "/questions\\?page=[0-9]+&sort=newest", "NextPage");
 		URLPattern questionPage = new URLPattern(website, "/questions/[0-9]+/.+", "QuestionPage");
-		URLPattern excludedPat1 = URLPattern.builder().withUrlPattern("/questions\\?page=[0-9]{3,}&sort=newest").withExcludeFrom(website).build();
+		URLPattern excludedPat1 = URLPattern.builder().withUrlPattern("/questions\\?page=[0-9]{3,}&sort=newest")
+				.withExcludeFrom(website).build();
 		// questionsHome mapping links to others pattern pages
 		questionsHome.getNextUrls().add(questionPage);
 		questionsHome.getNextUrls().add(nextQuestionsPage);
@@ -39,15 +40,19 @@ public class Main {
 		nextQuestionsPage.getNextUrls().add(questionPage);
 		nextQuestionsPage.getNextUrls().add(nextQuestionsPage);
 		// Create fields
-		Field titleField = new Field(questionPage, "html body.question-page div.container div#content div div#question-header h1 a.question-hyperlink", "Title");
+		Field titleField = new Field(questionPage,
+				"html body.question-page div.container div#content div div#question-header h1 a.question-hyperlink",
+				"Title");
 		Field answerField = new Field(questionPage, ".answer", ".post-text", "Answer");
 		Field commentOfAnswerField = new Field(questionPage, ".comment-copy", "CommentOfAnswer");
 		Field voteOfAnswerField = new Field(questionPage, ".vote-count-post", "VoteOfAnswer");
 		Field isAcceptedAnswerField = new Field(questionPage, ".vote-accepted-on", "isAcceptedOfAnswer");
-		Field tagsField = new Field(questionPage,
+		Field tagsField = new Field(
+				questionPage,
 				"html body.question-page div.container div#content div div#mainbar div#question.question table tbody tr td.postcell div div.post-taglist",
 				"Tags");
-		Field questionField = new Field(questionPage, "html body.question-page div.container div#content div div#mainbar div#question.question",
+		Field questionField = new Field(questionPage,
+				"html body.question-page div.container div#content div div#mainbar div#question.question",
 				"table tbody tr td.postcell div div.post-text", "Question");
 		answerField.setManyElements(true);
 		commentOfAnswerField.setManyElements(true);
