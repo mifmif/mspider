@@ -17,6 +17,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 /**
+ * Model of an element component of a page. defined by the css selector path in
+ * a specific UrlPattern, it could have a list of Field childs .
+ * 
  * @author y.mifrah
  * 
  */
@@ -48,6 +51,7 @@ public class Field {
 	private List<Field> subFields;
 	@ManyToOne
 	private Field parentField;
+	private FieldType type = FieldType.TEXT;
 
 	public Field() {
 	}
@@ -145,6 +149,14 @@ public class Field {
 
 	public void setContentSelector(String contentSelector) {
 		this.contentSelector = contentSelector;
+	}
+
+	public FieldType getType() {
+		return type;
+	}
+
+	public void setType(FieldType type) {
+		this.type = type;
 	}
 
 }
