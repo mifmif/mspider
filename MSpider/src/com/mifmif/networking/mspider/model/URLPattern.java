@@ -46,8 +46,21 @@ public class URLPattern {
 	private List<URL> urls;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pattern")
 	private List<Field> fields;
+	/**
+	 * List of urlPattern used for matching urls in the content of the current
+	 * url page (which match this url pattern).
+	 */
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	private List<URLPattern> nextUrls;
+
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "pattern")
+	private List<URLParameter> parameters;
+	/**
+	 * if true then the method to request the url that match this pattern is
+	 * POST, else , GET is used.
+	 */
+	@Column(name = "POST_REQUEST")
+	private boolean postRequest;
 	@Nullable
 	@ManyToOne
 	@JoinColumn(name = "ASSOCIATED_WEBSITE_ID")
@@ -68,6 +81,12 @@ public class URLPattern {
 		nextUrls = new ArrayList<URLPattern>();
 		fields = new ArrayList<Field>();
 		urls = new ArrayList<URL>();
+		setParameters(new ArrayList<URLParameter>());
+	}
+
+	public boolean hasParameters() {
+		return getParameters().size() != 0;
+
 	}
 
 	public Long getId() {
@@ -145,6 +164,22 @@ public class URLPattern {
 	 */
 	public boolean hasPayloadContent() {
 		return getFields().size() != 0;
+	}
+
+	public boolean isPostRequest() {
+		return postRequest;
+	}
+
+	public void setPostRequest(boolean postRequest) {
+		this.postRequest = postRequest;
+	}
+
+	public List<URLParameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<URLParameter> parameters) {
+		this.parameters = parameters;
 	}
 
 	public static class URLPatternBuilder {
