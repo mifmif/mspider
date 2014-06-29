@@ -23,8 +23,9 @@ import javax.persistence.UniqueConstraint;
  * 
  */
 @Entity
-@Table(name = "URL", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_VALUE", "ASSOCIATED_URL_PATTERN_ID" }) })
-@NamedQueries({ @NamedQuery(name = "Url.findByUrlPatternAndValue", query = "SELECT u FROM URL u WHERE u.url = :url and u.pattern.urlPattern = :urlPattern "),
+@Table(name = "URL", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_VALUE", "URL_PATTERN_ID" }) })
+@NamedQueries({
+		@NamedQuery(name = "Url.findByUrlPatternAndValue", query = "SELECT u FROM URL u WHERE u.url = :url and u.pattern.urlPattern = :urlPattern "),
 		@NamedQuery(name = "Url.findByWebsiteAndValue", query = "SELECT u FROM URL u WHERE u.url = :url and u.pattern.website = :website ") })
 public class URL {
 
@@ -39,8 +40,10 @@ public class URL {
 	private List<Payload> payloads;
 
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "ASSOCIATED_URL_PATTERN_ID")
+	@JoinColumn(name = "URL_PATTERN_ID")
 	private URLPattern pattern;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "url")
+	private List<ParameterValue> parameters;
 
 	public String getUrl() {
 		return url;
@@ -55,6 +58,7 @@ public class URL {
 		this.url = urlValue;
 		setPayloads(new ArrayList<Payload>());
 		pattern.getUrls().add(this);
+		parameters = new ArrayList<ParameterValue>();
 	}
 
 	public String getFullUrl() {
@@ -87,6 +91,14 @@ public class URL {
 
 	public void setPayloads(List<Payload> payloads) {
 		this.payloads = payloads;
+	}
+
+	public List<ParameterValue> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<ParameterValue> parameters) {
+		this.parameters = parameters;
 	}
 
 }
