@@ -5,6 +5,10 @@ import java.util.List;
 import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
 
+/**
+ * @author y.mifrah
+ *
+ */
 public interface UrlPatternDao extends Dao<Long, URLPattern> {
 
 	URLPattern findUniqueByUrlPattern(String urlPattern);
