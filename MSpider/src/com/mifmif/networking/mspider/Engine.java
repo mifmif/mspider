@@ -8,18 +8,23 @@ import java.util.Queue;
 
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
+import com.mifmif.networking.mspider.model.LoadingStrategy;
 import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.URL;
 import com.mifmif.networking.mspider.model.Website;
 import com.mifmif.networking.mspider.service.URLMapperService;
 import com.mifmif.networking.mspider.service.UrlLoader;
 
+/**
+ * @author y.mifrah
+ *
+ */
 public class Engine {
 	private Website website;
 	private URLMapperService urlService = URLMapperService.getInstance();
-	List<String> visitedUrls;
-	Queue<String> queueUrls;
-	WebsiteDao websiteDao = JpaDaoFactory.getJpaWebsiteDao();
+	private List<String> visitedUrls;
+	private Queue<String> queueUrls;
+	private WebsiteDao websiteDao = JpaDaoFactory.getJpaWebsiteDao();
 
 	public Engine(Website website) {
 		visitedUrls = new ArrayList<String>();
@@ -34,6 +39,23 @@ public class Engine {
 	}
 
 	public void start() {
+		switch (website.getStrategy()) {
+		case CRAWLING:
+			crawl();
+			break;
+
+		case PARAMETERS_GENERATION:
+			loadByParamsGeneration();
+			break;
+		}
+	}
+
+	private void loadByParamsGeneration() {
+		// TODO start a list of thread, each one for a url of the website, each
+		// thread will generate parameters and use in the request .
+	}
+
+	private void crawl() {
 		queueUrls.add(website.getStartPage());
 		while (!queueUrls.isEmpty() && customizedConstraint()) {
 			String currUrlValue = queueUrls.poll();
