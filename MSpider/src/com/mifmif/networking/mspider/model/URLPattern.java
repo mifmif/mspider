@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -52,7 +53,8 @@ public class URLPattern {
 	 */
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	private List<URLPattern> nextUrls;
-
+	@OneToOne(mappedBy = "pattern")
+	private PageTemplate template;
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "pattern")
 	private List<URLParameter> parameters;
 	/**
@@ -180,6 +182,14 @@ public class URLPattern {
 
 	public void setParameters(List<URLParameter> parameters) {
 		this.parameters = parameters;
+	}
+
+	public PageTemplate getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(PageTemplate template) {
+		this.template = template;
 	}
 
 	public static class URLPatternBuilder {
