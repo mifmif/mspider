@@ -8,6 +8,12 @@ import javax.persistence.Persistence;
 
 import com.mifmif.networking.mspider.database.dao.api.Dao;
 
+/**
+ * @author y.mifrah
+ *
+ * @param <K>
+ * @param <E>
+ */
 public abstract class JpaDao<K, E> implements Dao<K, E> {
 	protected Class<E> entityClass;
 	private static final String PERSISTENCE_UNIT_NAME = "MSpider";

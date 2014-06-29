@@ -6,6 +6,10 @@ import com.mifmif.networking.mspider.database.dao.api.UrlDao;
 import com.mifmif.networking.mspider.database.dao.api.UrlPatternDao;
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 
+/**
+ * @author y.mifrah
+ *
+ */
 public class JpaDaoFactory {
 	private JpaDaoFactory() {
 
