@@ -10,6 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+/**
+ * The content of a field in a concrete url.
+ * 
+ * @author y.mifrah
+ *
+ */
 @Entity
 public class Payload {
 	@Id
