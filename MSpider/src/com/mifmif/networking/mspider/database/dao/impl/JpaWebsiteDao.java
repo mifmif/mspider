@@ -13,7 +13,8 @@ public class JpaWebsiteDao extends JpaDao<Long, Website> implements WebsiteDao {
 
 	@Override
 	public Website finbByHost(String host) {
-		List<Website> found = entityManager.createNamedQuery("Website.find", Website.class).setParameter("host", host).getResultList();
+		List<Website> found = entityManager.createNamedQuery("Website.findByHost", Website.class)
+				.setParameter("host", host).getResultList();
 		return found.isEmpty() ? null : found.get(0);
 	}
 
