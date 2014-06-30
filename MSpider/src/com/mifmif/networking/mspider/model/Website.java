@@ -1,14 +1,22 @@
 package com.mifmif.networking.mspider.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -16,17 +24,35 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+/**
+ * Website entity model that present the structure of the website ,the
+ * urlpattern that would be used when loading information from it.
+ * 
+ * @author y.mifrah
+ *
+ */
 @Entity
 @Table(name = "WEBSITE", uniqueConstraints = { @UniqueConstraint(columnNames = { "HOST", "START_PAGE" }) })
-@NamedQueries({ @NamedQuery(name = "Website.find", query = "SELECT w FROM Website w WHERE w.host = :host ") })
+@NamedQueries({ @NamedQuery(name = "Website.findByHost", query = "SELECT w FROM Website w WHERE w.host = :host ") })
 public class Website {
 	@Id
 	@SequenceGenerator(name = "WEB_SITE_SEQ_GEN", sequenceName = "WEB_SITE_SEQ_GEN")
 	@GeneratedValue(generator = "WEB_SITE_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
+	/**
+	 * Host url of the website (ex: http://www.example.com)
+	 */
 	@Column(name = "HOST")
 	private String host;
+	/**
+	 * Cookies used to connect to the website
+	 */
+	@ElementCollection
+	@JoinTable(name = "COOKIES_WEBSITE", joinColumns = @JoinColumn(name = "ID"))
+	@MapKeyColumn(name = "COOKIES_KEY")
+	@Column(name = "COOKIES_VALUE")
+	private Map<String, String> cookies;
 	/**
 	 * <code>/index.php</code> or just / or any page that would be used as the
 	 * starting point
@@ -38,6 +64,17 @@ public class Website {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "websiteToExcludeFrom")
 	private List<URLPattern> excludedPatterns;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "website")
+	private List<DomainObjectModel> domainObjects;
+
+	/**
+	 * Loading strategy applied to load information from the website , crawling
+	 * for link following or parameter generation to generate parameter used to
+	 * request pages .
+	 */
+	@Enumerated(EnumType.STRING)
+	private LoadingStrategy strategy = LoadingStrategy.CRAWLING;
 
 	public String getStartPage() {
 		return startPage;
@@ -51,6 +88,7 @@ public class Website {
 		this.host = host;
 		patterns = new ArrayList<URLPattern>();
 		excludedPatterns = new ArrayList<URLPattern>();
+		setCookies(new HashMap<String, String>());
 	}
 
 	public void setStartPage(String startPage) {
@@ -87,5 +125,21 @@ public class Website {
 
 	public void setExcludedPatterns(List<URLPattern> excludedPatterns) {
 		this.excludedPatterns = excludedPatterns;
+	}
+
+	public LoadingStrategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(LoadingStrategy strategy) {
+		this.strategy = strategy;
+	}
+
+	public Map<String, String> getCookies() {
+		return cookies;
+	}
+
+	public void setCookies(Map<String, String> cookies) {
+		this.cookies = cookies;
 	}
 }

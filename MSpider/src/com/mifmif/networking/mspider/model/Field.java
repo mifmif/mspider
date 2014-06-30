@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,7 +53,12 @@ public class Field {
 	private List<Field> subFields;
 	@ManyToOne
 	private Field parentField;
+	@Enumerated(EnumType.STRING)
 	private FieldType type = FieldType.TEXT;
+
+	@ManyToOne
+	@JoinColumn(name = "OBJECT_MODEL_ID")
+	private DomainObjectModel objectModel;
 
 	public Field() {
 	}
@@ -157,6 +164,21 @@ public class Field {
 
 	public void setType(FieldType type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the objectModel
+	 */
+	public DomainObjectModel getObjectModel() {
+		return objectModel;
+	}
+
+	/**
+	 * @param objectModel
+	 *            the objectModel to set
+	 */
+	public void setObjectModel(DomainObjectModel objectModel) {
+		this.objectModel = objectModel;
 	}
 
 }

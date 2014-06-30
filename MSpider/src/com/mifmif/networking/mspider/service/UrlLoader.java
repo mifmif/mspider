@@ -3,18 +3,28 @@ package com.mifmif.networking.mspider.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.mifmif.networking.mspider.model.Field;
+import com.mifmif.networking.mspider.model.PageTemplate;
+import com.mifmif.networking.mspider.model.ParameterValue;
 import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.URL;
+import com.mifmif.networking.mspider.util.Utils;
 
+/**
+ * @author y.mifrah
+ *
+ */
 public class UrlLoader {
 	private URL url;
+	private Connection connection;
 	private Document document;
 
 	public UrlLoader(URL url) {
@@ -22,17 +32,95 @@ public class UrlLoader {
 	}
 
 	/**
-	 * Load payloads from the fields of this urlLoader.
+	 * Load payloads from the url of this urlLoader based on the fields of the
+	 * Url Pattern.
 	 * 
 	 * @throws IOException
 	 */
 	public void load() throws IOException {
-
-		document = Jsoup.connect(url.getFullUrl()).get();
+		connection = Jsoup.connect(url.getFullUrl());
+		setCookies();
+		setParameters();
+		if (url.getPattern().isPostRequest())
+			document = connection.post();
+		else
+			document = connection.get();
 		List<Field> fields = url.getPattern().getFields();
 		for (Field field : fields) {
 			extractPayload(field, document);
 		}
+	}
+
+	public PageTemplate getTemplate() {
+		Element templateDocument = document.clone();
+		String baseContent = templateDocument.toString();
+		List<Field> fields = url.getPattern().getFields();
+		for (Field field : fields) {
+			buildFieldTemplate(field, templateDocument);
+		}
+		String templateContent = templateDocument.toString();
+		PageTemplate template = new PageTemplate(url.getPattern(), baseContent, templateContent);
+		// TODO prepare template based on document content ,payloads extracted
+		// and fields of the urlPattern
+		return template;
+	}
+
+	/**
+	 * @param field
+	 * @param templateElement
+	 */
+	private void buildFieldTemplate(Field field, Element templateElement) {
+		String selector = field.getSelector();
+		Elements elements = templateElement.select(selector);
+		if (field.isSelectorForParentElement() && elements.first() != null) {
+			elements = elements.first().children();
+		}
+		if (elements.size() == 0)
+			return;
+
+		if (!field.isManyElements()) {
+			Element innerElmnt = elements.first();
+			String ElFieldExpression = Utils.getElFieldExpression(field);
+			innerElmnt.empty();
+			innerElmnt.appendText(ElFieldExpression);
+			buildsubFieldTemplate(field, innerElmnt);
+		} else {
+			for (Element innerElmnt : elements) {
+				String ElFieldExpression = Utils.getElFieldExpression(field);
+				innerElmnt.empty();
+				innerElmnt.appendText(ElFieldExpression);
+				buildsubFieldTemplate(field, innerElmnt);
+			}
+		}
+	}
+
+	/**
+	 * @param field
+	 * @param innerElmnt
+	 */
+	private void buildsubFieldTemplate(Field field, Element innerElmnt) {
+		for (Field subField : field.getSubFields()) {
+			buildFieldTemplate(subField, innerElmnt);
+		}
+
+	}
+
+	private void setCookies() {
+		Map<String, String> cookies = url.getPattern().getWebsite().getCookies();
+		connection.cookies(cookies);
+
+	}
+
+	private void setHeaders() {
+		// TODO get headers from the website instance and set them to the
+		// connection
+	}
+
+	private void setParameters() {
+		boolean hasParameters = url.getParameters().size() != 0;
+		if (hasParameters)
+			for (ParameterValue parameter : url.getParameters())
+				connection.data(parameter.getName(), parameter.getValue());
 
 	}
 
@@ -87,15 +175,13 @@ public class UrlLoader {
 	}
 
 	private Payload preparePayload(Element element, Field field, URL url) {
-		String content;
+		String payloadValue;
 		if (field.getContentSelector() != null) {
 			String contentSelector = field.getContentSelector();
-			content = element.select(contentSelector).text();
+			payloadValue = element.select(contentSelector).text();
 		} else
-			content = element.text();
-		Payload payload = new Payload(content, field, url);
-		payload.setField(field);
-		payload.setContent(content);
+			payloadValue = element.text();
+		Payload payload = new Payload(payloadValue, field, url);
 		return payload;
 	}
 

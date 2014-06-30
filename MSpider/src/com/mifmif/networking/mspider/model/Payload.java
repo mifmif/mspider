@@ -26,8 +26,13 @@ public class Payload {
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "URL_ID")
 	private URL url;
-	@Column(name = "CONTENT", length = 65000)
-	private String content;
+
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "OBJECT_INSTANCE_ID")
+	private DomainObjectInstance objectInsance;
+
+	@Column(name = "VALUE", length = 65000)
+	private String value;
 
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "FIELD_ID")
@@ -36,10 +41,10 @@ public class Payload {
 	public Payload() {
 	}
 
-	public Payload(String content, Field field, URL url) {
+	public Payload(String value, Field field, URL url) {
 		this.field = field;
 		this.url = url;
-		this.setContent(content);
+		this.value = value;
 	}
 
 	public Field getField() {
@@ -71,11 +76,33 @@ public class Payload {
 		this.url = url;
 	}
 
-	public String getContent() {
-		return content;
+	/**
+	 * @return the objectInsance
+	 */
+	public DomainObjectInstance getObjectInsance() {
+		return objectInsance;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	/**
+	 * @param objectInsance
+	 *            the objectInsance to set
+	 */
+	public void setObjectInsance(DomainObjectInstance objectInsance) {
+		this.objectInsance = objectInsance;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value
+	 *            the value to set
+	 */
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

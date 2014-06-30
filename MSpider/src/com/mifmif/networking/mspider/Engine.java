@@ -6,11 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.mifmif.networking.mspider.database.dao.api.PageTemplateDao;
+import com.mifmif.networking.mspider.database.dao.api.UrlPatternDao;
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
-import com.mifmif.networking.mspider.model.LoadingStrategy;
+import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.URL;
+import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
 import com.mifmif.networking.mspider.service.URLMapperService;
 import com.mifmif.networking.mspider.service.UrlLoader;
@@ -25,6 +28,9 @@ public class Engine {
 	private List<String> visitedUrls;
 	private Queue<String> queueUrls;
 	private WebsiteDao websiteDao = JpaDaoFactory.getJpaWebsiteDao();
+
+	private PageTemplateDao templateDao = JpaDaoFactory.getJpaPageTemplateDao();
+	private UrlPatternDao urlPatternDao = JpaDaoFactory.getJpaUrlPatternDao();
 
 	public Engine(Website website) {
 		visitedUrls = new ArrayList<String>();
@@ -68,6 +74,13 @@ public class Engine {
 			UrlLoader loader = new UrlLoader(currentUrl);
 			try {
 				loader.load();
+				if (currentUrl.getPattern().getTemplate() == null) {
+					PageTemplate template = loader.getTemplate();
+					URLPattern pattern = currentUrl.getPattern();
+					pattern.setTemplate(template);
+					templateDao.persist(template);
+					urlPatternDao.merge(pattern);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				sleep(250);
