@@ -16,11 +16,16 @@ com.mifmif.networking.mspider.Main
 **Features :**
 
 -Navigate over URLs of a web site based on a set predefined URLPatterns.
--Follow links in each URL
+
+-Follow links in each URL.
+
 -Scrap payload from predefined fields of each URLPattern.
+
 -Create template for each URLPattern.
+
 -Structured storage (Data storage are configured from META-INF/persistance.xml).
--Compatibility with all RDBMS Datastores (Oracle,PostgresSQL,MySQL..)
+
+-Compatibility with all RDBMS Data stores (Oracle,PostgresSQL,MySQL..)
 
 
 **TODO :**
@@ -30,4 +35,5 @@ com.mifmif.networking.mspider.Main
 -Create new database schema for the defined class and classify & store extracted data into the new database.
 
 -auto induction of our wrapper megaspider , input will be the URL of the web site. The learning technique have to show possibilities of sitemap that could be applied (URL Patterns to use, link between them, fields to extract).
+
 -statistical analyze of the web site before choosing the sitemap to help best choice of the write structure. 
