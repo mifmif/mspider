@@ -1,4 +1,4 @@
-megaspider
+MegaSpider
 =======
 MegaSpider : a pattern based web data extractor, template maker and web site cloner. that scrap web pages and handle fields specified by the user, 
 and navigate over several links in the web sites contents based on a set of patterns roles specified by the user. The scrapped data are stored in a database , JPA based data access layer.
