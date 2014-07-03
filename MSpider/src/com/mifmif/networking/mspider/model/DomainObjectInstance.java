@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Class that present a domain model object in a website,
@@ -26,9 +27,11 @@ import javax.persistence.SequenceGenerator;
  *
  */
 @Entity
+@Table(name = "DOMAIN_OBJECT_INSTANCE")
 @NamedQueries({
-		@NamedQuery(name = "DomainObjectInstance.findByWebsiteAndModelName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance WHERE objectInstance.model.website = :website and  objectInstance.model.name= :name"),
-		@NamedQuery(name = "DomainObjectInstance.findByWebsiteAndModelNameAndPayloadNameAndValue", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.model.name= :modelName AND objectInstance.model.website = :website AND p.field.objectModel=objectInstance.model   AND p.field.name= :payloadName  AND p.value= :payloadValue ")
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance WHERE objectInstance.model.website = :website and  objectInstance.model.name= :modelName"),
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.model.name= :modelName AND objectInstance.model.website = :website AND p.field.objectModel=objectInstance.model   AND p.field.name= :payloadName   "),
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadNameAndValue", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.model.name= :modelName AND objectInstance.model.website = :website AND p.field.objectModel=objectInstance.model   AND p.field.name= :payloadName  AND p.value= :payloadValue ")
 
 })
 public class DomainObjectInstance {
@@ -38,8 +41,6 @@ public class DomainObjectInstance {
 	@GeneratedValue(generator = "DOMAIN_OBJECT_INSTANCE_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
-
-	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "objectInsance", orphanRemoval = true)
 	private List<Payload> payloads;
@@ -59,26 +60,10 @@ public class DomainObjectInstance {
 	 * @param name
 	 * @param model
 	 */
-	public DomainObjectInstance(String name, DomainObjectModel model) {
+	public DomainObjectInstance(DomainObjectModel model) {
 		super();
-		this.name = name;
 		this.model = model;
 		payloads = new ArrayList<Payload>();
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -94,6 +79,14 @@ public class DomainObjectInstance {
 	 */
 	public void setPayloads(List<Payload> payloads) {
 		this.payloads = payloads;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

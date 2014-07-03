@@ -10,8 +10,9 @@ import com.mifmif.networking.mspider.model.Website;
  *
  */
 public interface DomainObjectInstanceDao extends Dao<Long, DomainObjectInstance> {
-	List<DomainObjectInstance> findByWebsiteAndModelName(Website website, String modelName);
+	List<DomainObjectInstance> findAllByWebsiteAndModelName(Website website, String modelName);
 
-	List<DomainObjectInstance> findByWebsiteAndDomainNameAndPayloadNameAndValue(Website website, String domainName,
-			String payloadName, String payloadValue);
+	List<DomainObjectInstance> findAllByWebsiteAndModelNameAndPayloadNameAndValue(Website website, String domainName, String payloadName, String payloadValue);
+
+	List<DomainObjectInstance> findAllByWebsiteAndModelNameAndPayloadName(Website website, String domainName, String payloadName);
 }

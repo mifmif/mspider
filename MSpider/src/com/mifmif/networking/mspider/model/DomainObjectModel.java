@@ -3,6 +3,7 @@
  */
 package com.mifmif.networking.mspider.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Class that present a domain model object in a website,
@@ -23,6 +25,7 @@ import javax.persistence.SequenceGenerator;
  *
  */
 @Entity
+@Table(name = "DOMAIN_OBJECT_MODEL")
 public class DomainObjectModel {
 
 	@Id
@@ -30,12 +33,19 @@ public class DomainObjectModel {
 	@GeneratedValue(generator = "DOMAIN_OBJECT_MODEL_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
-
+	@Column(name = "NAME")
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "objectModel", orphanRemoval = true)
 	private List<Field> fields;
 
+	/**
+	 * Name of the field used to identify the domainObjectModel, the list of
+	 * DomainObjectInstance that are attached to this domainObjectModel will be
+	 * identified by the value of the field <code>identifierFieldName</code>.
+	 */
+	@Column(name = "IDENTIFIER_FIELD_NAME")
+	private String identifierFieldName;
 	@ManyToOne
 	@JoinColumn(name = "WEBSITE_ID")
 	private Website website;
@@ -45,6 +55,15 @@ public class DomainObjectModel {
  */
 	public DomainObjectModel() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+ * 
+ */
+	public DomainObjectModel(Website website, String name) {
+		this.website = website;
+		this.name = name;
+		fields = new ArrayList<Field>();
 	}
 
 	/**
@@ -90,6 +109,14 @@ public class DomainObjectModel {
 	 */
 	public void setWebsite(Website website) {
 		this.website = website;
+	}
+
+	public String getIdentifierFieldName() {
+		return identifierFieldName;
+	}
+
+	public void setIdentifierFieldName(String identifierFieldName) {
+		this.identifierFieldName = identifierFieldName;
 	}
 
 }

@@ -25,8 +25,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- * Website entity model that present the structure of the website ,the
- * urlpattern that would be used when loading information from it.
+ * Website entity model that present the structure of the website ,it contain
+ * the list of informations that will be used to query the website,it group also
+ * the urlpattern that would be used when loading information from it.
  * 
  * @author y.mifrah
  *
@@ -49,7 +50,7 @@ public class Website {
 	 * Cookies used to connect to the website
 	 */
 	@ElementCollection
-	@JoinTable(name = "COOKIES_WEBSITE", joinColumns = @JoinColumn(name = "ID"))
+	@JoinTable(name = "WEBSITE_COOKIES", joinColumns = @JoinColumn(name = "WEBSITE_ID"))
 	@MapKeyColumn(name = "COOKIES_KEY")
 	@Column(name = "COOKIES_VALUE")
 	private Map<String, String> cookies;
@@ -66,7 +67,7 @@ public class Website {
 	private List<URLPattern> excludedPatterns;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "website")
-	private List<DomainObjectModel> domainObjects;
+	private List<DomainObjectModel> objectModels;
 
 	/**
 	 * Loading strategy applied to load information from the website , crawling
@@ -86,9 +87,10 @@ public class Website {
 
 	public Website(String host) {
 		this.host = host;
-		patterns = new ArrayList<URLPattern>();
-		excludedPatterns = new ArrayList<URLPattern>();
-		setCookies(new HashMap<String, String>());
+		this.patterns = new ArrayList<URLPattern>();
+		this.excludedPatterns = new ArrayList<URLPattern>();
+		this.cookies = new HashMap<String, String>();
+		this.objectModels = new ArrayList<DomainObjectModel>();
 	}
 
 	public void setStartPage(String startPage) {
@@ -141,5 +143,13 @@ public class Website {
 
 	public void setCookies(Map<String, String> cookies) {
 		this.cookies = cookies;
+	}
+
+	public List<DomainObjectModel> getObjectModels() {
+		return objectModels;
+	}
+
+	public void setObjectModels(List<DomainObjectModel> objectModels) {
+		this.objectModels = objectModels;
 	}
 }

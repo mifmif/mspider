@@ -11,12 +11,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
+ * It present the parameter value used to query one <code>URL</code> , it's
+ * attached to a <code>URLParameter</code> to define the name of parameter to
+ * use when preparing request, and <code>URL</code> that was invoked using this
+ * ParameterValue
+ * 
  * @author y.mifrah
  *
  */
 @Entity
+@Table(name = "PARAMETER_VALUE")
 public class ParameterValue {
 
 	@Id

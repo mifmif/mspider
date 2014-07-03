@@ -19,12 +19,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
+ * It present the parameter model that has a website. values used to query the
+ * website are presented by <code>ParameterValue</code>
+ * 
  * @author y.mifrah
  *
  */
 @Entity
+@Table(name = "URL_PARAMETER")
 public class URLParameter {
 
 	@Id

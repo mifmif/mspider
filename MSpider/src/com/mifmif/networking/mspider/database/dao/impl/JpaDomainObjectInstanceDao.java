@@ -22,8 +22,8 @@ public class JpaDomainObjectInstanceDao extends JpaDao<Long, DomainObjectInstanc
 	 * java.lang.String)
 	 */
 	@Override
-	public List<DomainObjectInstance> findByWebsiteAndModelName(Website website, String modelName) {
-		List<DomainObjectInstance> found = entityManager.createNamedQuery("DomainObjectInstance.findByWebsiteAndModelName", DomainObjectInstance.class)
+	public List<DomainObjectInstance> findAllByWebsiteAndModelName(Website website, String modelName) {
+		List<DomainObjectInstance> found = entityManager.createNamedQuery("DomainObjectInstance.findAllByWebsiteAndModelName", DomainObjectInstance.class)
 				.setParameter("website", website).setParameter("modelName", modelName).getResultList();
 		return found;
 	}
@@ -38,12 +38,20 @@ public class JpaDomainObjectInstanceDao extends JpaDao<Long, DomainObjectInstanc
 	 * java.lang.String)
 	 */
 	@Override
-	public List<DomainObjectInstance> findByWebsiteAndDomainNameAndPayloadNameAndValue(Website website, String modelName, String payloadName,
+	public List<DomainObjectInstance> findAllByWebsiteAndModelNameAndPayloadNameAndValue(Website website, String modelName, String payloadName,
 			String payloadValue) {
 		List<DomainObjectInstance> found = entityManager
-				.createNamedQuery("DomainObjectInstance.findByWebsiteAndModelNameAndPayloadNameAndValue", DomainObjectInstance.class)
+				.createNamedQuery("DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadNameAndValue", DomainObjectInstance.class)
 				.setParameter("website", website).setParameter("modelName", modelName).setParameter("payloadName", payloadName)
 				.setParameter("payloadValue", payloadValue).getResultList();
+		return found;
+	}
+
+	@Override
+	public List<DomainObjectInstance> findAllByWebsiteAndModelNameAndPayloadName(Website website, String modelName, String payloadName) {
+		List<DomainObjectInstance> found = entityManager
+				.createNamedQuery("DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadName", DomainObjectInstance.class)
+				.setParameter("website", website).setParameter("modelName", modelName).setParameter("payloadName", payloadName).getResultList();
 		return found;
 	}
 

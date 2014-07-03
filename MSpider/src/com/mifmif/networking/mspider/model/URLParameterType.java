@@ -3,7 +3,6 @@
  */
 package com.mifmif.networking.mspider.model;
 
-
 /**
  * @author y.mifrah
  *

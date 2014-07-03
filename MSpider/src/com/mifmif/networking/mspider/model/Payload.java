@@ -23,18 +23,18 @@ public class Payload {
 	@GeneratedValue(generator = "PAYLOAD_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "URL_ID")
 	private URL url;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "OBJECT_INSTANCE_ID")
 	private DomainObjectInstance objectInsance;
 
 	@Column(name = "VALUE", length = 65000)
 	private String value;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "FIELD_ID")
 	private Field field;
 

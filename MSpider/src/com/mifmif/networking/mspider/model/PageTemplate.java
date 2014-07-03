@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * PageTemplate are constructed from one or more concrete page loaded from url
@@ -19,6 +21,7 @@ import javax.persistence.SequenceGenerator;
  *
  */
 @Entity
+@Table(name = "PAGE_TEMPLATE")
 public class PageTemplate {
 
 	@Id
@@ -26,12 +29,13 @@ public class PageTemplate {
 	@GeneratedValue(generator = "PAGE_TEMPLATE_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
-
-	@Column(columnDefinition = "TEXT", name = "CONTENT")
+	@Lob
+	@Column(name = "CONTENT")
 	private String content;
 	@OneToOne
 	private URLPattern pattern;
-	@Column(columnDefinition = "TEXT", name = "BASE_PAGE_CONTENT")
+	@Lob
+	@Column(name = "BASE_PAGE_CONTENT")
 	private String basePageContent;
 
 	/**

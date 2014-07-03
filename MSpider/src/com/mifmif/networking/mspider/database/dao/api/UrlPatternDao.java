@@ -11,8 +11,8 @@ import com.mifmif.networking.mspider.model.Website;
  */
 public interface UrlPatternDao extends Dao<Long, URLPattern> {
 
-	URLPattern findUniqueByUrlPattern(String urlPattern);
+	URLPattern findByPatternValue(String urlPattern);
 
-	List<URLPattern> findByWebsite(Website website);
+	List<URLPattern> findAllByWebsite(Website website);
 
 }

@@ -26,7 +26,8 @@ import javax.persistence.SequenceGenerator;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "Field.findByUrlPattern", query = "SELECT f FROM Field f WHERE f.pattern.urlPattern = :urlPattern ") })
+@NamedQueries({ @NamedQuery(name = "Field.findAllByUrlPattern", query = "SELECT f FROM Field f WHERE f.pattern = :pattern "),
+		@NamedQuery(name = "Field.findByUrlPatternAndName", query = "SELECT f FROM Field f WHERE   f.pattern = :pattern AND f.name= :fieldName ") })
 public class Field {
 	@Id
 	@SequenceGenerator(name = "FIELD_SEQ_GEN", sequenceName = "FIELD_SEQ_GEN")
@@ -63,8 +64,9 @@ public class Field {
 	public Field() {
 	}
 
-	public Field(URLPattern pattern, String selector, String name) {
+	public Field(DomainObjectModel objectModel, URLPattern pattern, String selector, String name) {
 		super();
+		this.objectModel = objectModel;
 		this.pattern = pattern;
 		this.selector = selector;
 		this.name = name;
@@ -73,8 +75,8 @@ public class Field {
 
 	}
 
-	public Field(URLPattern pattern, String selector, String tagContentSelector, String name) {
-		this(pattern, selector, name);
+	public Field(DomainObjectModel objectModel, URLPattern pattern, String selector, String tagContentSelector, String name) {
+		this(objectModel, pattern, selector, name);
 		this.setContentSelector(tagContentSelector);
 	}
 
@@ -167,10 +169,18 @@ public class Field {
 	}
 
 	/**
+	 * Return the <code>objectModel</code> of this field if
+	 * <code>parentField</code> is null ,else return the result of
+	 * <code>parentField.getObjectModel()</code>. <br>
+	 * This way, subFields of a field will always return the objectModel of the
+	 * parent field.
+	 * 
 	 * @return the objectModel
 	 */
 	public DomainObjectModel getObjectModel() {
-		return objectModel;
+		if (parentField == null)
+			return objectModel;
+		return parentField.getObjectModel();
 	}
 
 	/**

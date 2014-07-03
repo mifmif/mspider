@@ -27,11 +27,9 @@ import com.sun.istack.Nullable;
  *
  */
 @Entity
-@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE",
-		"ASSOCIATED_WEBSITE_ID" }) })
-@NamedQueries({
-		@NamedQuery(name = "UrlPattern.find", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
-		@NamedQuery(name = "UrlPattern.findByWebsite", query = "SELECT u FROM URLPattern u WHERE u.website = :website ") })
+@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
+@NamedQueries({ @NamedQuery(name = "UrlPattern.findByPatternValue", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
+		@NamedQuery(name = "UrlPattern.findAllByWebsite", query = "SELECT u FROM URLPattern u WHERE u.website = :website ") })
 public class URLPattern {
 
 	@Id
@@ -45,7 +43,7 @@ public class URLPattern {
 	private String urlName;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pattern")
 	private List<URL> urls;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pattern")
+	@OneToMany(mappedBy = "pattern")
 	private List<Field> fields;
 	/**
 	 * List of urlPattern used for matching urls in the content of the current
@@ -55,7 +53,7 @@ public class URLPattern {
 	private List<URLPattern> nextUrls;
 	@OneToOne(mappedBy = "pattern")
 	private PageTemplate template;
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "pattern")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pattern")
 	private List<URLParameter> parameters;
 	/**
 	 * if true then the method to request the url that match this pattern is
@@ -67,7 +65,7 @@ public class URLPattern {
 	@ManyToOne
 	@JoinColumn(name = "ASSOCIATED_WEBSITE_ID")
 	private Website website;
-
+	private boolean contentStatic;
 	@Nullable
 	@ManyToOne
 	@JoinColumn(name = "EXCLUDED_FROM_WEBSITE_ID")
@@ -76,14 +74,15 @@ public class URLPattern {
 	public URLPattern() {
 	}
 
-	public URLPattern(Website website, String urlPattern, String urlName) {
+	public URLPattern(Website website, String urlPattern, String urlName, boolean contentStatic) {
 		this.website = website;
 		this.urlPattern = urlPattern;
 		this.urlName = urlName;
-		nextUrls = new ArrayList<URLPattern>();
-		fields = new ArrayList<Field>();
-		urls = new ArrayList<URL>();
-		setParameters(new ArrayList<URLParameter>());
+		this.contentStatic = contentStatic;
+		this.nextUrls = new ArrayList<URLPattern>();
+		this.fields = new ArrayList<Field>();
+		this.urls = new ArrayList<URL>();
+		this.parameters = new ArrayList<URLParameter>();
 	}
 
 	public boolean hasParameters() {
@@ -192,6 +191,14 @@ public class URLPattern {
 		this.template = template;
 	}
 
+	public boolean isContentStatic() {
+		return contentStatic;
+	}
+
+	public void setContentStatic(boolean contentStatic) {
+		this.contentStatic = contentStatic;
+	}
+
 	public static class URLPatternBuilder {
 		URLPattern pattern;
 
@@ -205,12 +212,22 @@ public class URLPattern {
 			return this;
 		}
 
+		public URLPatternBuilder withUrlName(String urlName) {
+			pattern.setUrlName(urlName);
+			return this;
+		}
+
 		public URLPattern build() {
 			return pattern;
 		}
 
 		public URLPatternBuilder withExcludeFrom(Website website) {
 			pattern.setWebsiteToExcludeFrom(website);
+			return this;
+		}
+
+		public URLPatternBuilder withContentStatic(boolean contentStatic) {
+			pattern.setContentStatic(contentStatic);
 			return this;
 		}
 
