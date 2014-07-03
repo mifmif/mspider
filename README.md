@@ -4,12 +4,12 @@ MegaSpider : a pattern based web data extractor, template maker and web site clo
 and navigate over several links in the web sites contents based on a set of patterns roles specified by the user. The scrapped data are stored in a database , JPA based data access layer.
 
 
--**MegaSpider Metamodel :**
+**MegaSpider Metamodel :**
 -
 
 MegaSpider is based on a well defined MetaModel that present in a high level the abstract presentation of a web site, it focus on the  generic composition of web sites.
 
--**How to use it :**
+**How to use it :**
 -
 
 Define the sitemap : your web site and URL pattern that you want to navigate to,link between them, and their fields that you want to scrap. then start the engine. 
@@ -101,7 +101,8 @@ In this example we bootstrap Database by storing 'http://www.stackoverflow.com' 
 		Engine engine = new Engine(website);
 		engine.start(); 
 ```
--**Features :**
+
+**Features :**
 -
 
 -Navigate over URLs of a web site based on a set predefined URLPatterns.
@@ -117,7 +118,7 @@ In this example we bootstrap Database by storing 'http://www.stackoverflow.com' 
 -Compatibility with all RDBMS Data stores (Oracle,PostgresSQL,MySQL..)
 
 
--**TODO :**
+**TODO :**
 -
 
 -Regex to String generation : build value of parameters from regular expression and use them in requests. 
