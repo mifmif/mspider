@@ -1,22 +1,18 @@
 package com.mifmif.networking.mspider;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import com.mifmif.networking.mspider.database.dao.api.PageTemplateDao;
-import com.mifmif.networking.mspider.database.dao.api.UrlPatternDao;
-import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
-import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.PageTemplate;
-import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.URL;
-import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
-import com.mifmif.networking.mspider.service.URLMapperService;
-import com.mifmif.networking.mspider.service.UrlLoader;
+import com.mifmif.networking.mspider.service.PayloadService;
+import com.mifmif.networking.mspider.service.URLLoader;
+import com.mifmif.networking.mspider.service.URLService;
+import com.mifmif.networking.mspider.service.WebsiteService;
+import com.mifmif.networking.mspider.util.Utils;
 
 /**
  * @author y.mifrah
@@ -24,13 +20,11 @@ import com.mifmif.networking.mspider.service.UrlLoader;
  */
 public class Engine {
 	private Website website;
-	private URLMapperService urlService = URLMapperService.getInstance();
+	private URLService urlService = URLService.getInstance();
+	private WebsiteService websiteService = WebsiteService.getInstance();
+	private PayloadService payloadService = PayloadService.getInstance();
 	private List<String> visitedUrls;
 	private Queue<String> queueUrls;
-	private WebsiteDao websiteDao = JpaDaoFactory.getJpaWebsiteDao();
-
-	private PageTemplateDao templateDao = JpaDaoFactory.getJpaPageTemplateDao();
-	private UrlPatternDao urlPatternDao = JpaDaoFactory.getJpaUrlPatternDao();
 
 	public Engine(Website website) {
 		visitedUrls = new ArrayList<String>();
@@ -41,7 +35,7 @@ public class Engine {
 	public Engine(String host) {
 		visitedUrls = new ArrayList<String>();
 		queueUrls = new LinkedList<String>();
-		this.website = websiteDao.finbByHost(host);
+		this.website = websiteService.finbByHost(host);
 	}
 
 	public void start() {
@@ -58,7 +52,7 @@ public class Engine {
 
 	private void loadByParamsGeneration() {
 		// TODO start a list of thread, each one for a url of the website, each
-		// thread will generate parameters and use in the request .
+		// thread will generate parameters and use them in the request .
 	}
 
 	private void crawl() {
@@ -68,31 +62,23 @@ public class Engine {
 			if (isVisitedUrl(currUrlValue))
 				continue;
 			System.out.println(currUrlValue);
-			if (!isValidUrl(currUrlValue))
+			boolean isURLExistAndContentStatic = urlService.isURLExistAndContentStatic(website, currUrlValue);
+			if (isURLExistAndContentStatic)
 				continue;
 			URL currentUrl = prepareUrl(currUrlValue);
-			UrlLoader loader = new UrlLoader(currentUrl);
+			URLLoader loader = new URLLoader(currentUrl);
 			try {
 				loader.load();
 				if (currentUrl.getPattern().getTemplate() == null) {
-					PageTemplate template = loader.getTemplate();
-					URLPattern pattern = currentUrl.getPattern();
-					pattern.setTemplate(template);
-					templateDao.persist(template);
-					urlPatternDao.merge(pattern);
+					PageTemplate template = loader.buildTemplate();
+					urlService.persistTemplate(template);
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-				sleep(250);
+				Utils.sleep(250);
 				continue;
 			}
-			for (Payload payload : currentUrl.getPayloads())
-				urlService.savePayload(payload);
-			if (currentUrl.getPayloads().size() != 0)
-				urlService.updateUrl(currentUrl);
-
-			else
-				urlService.removeUrl(currentUrl);
+			persistPayloads(currentUrl);
 			addTovisitedUrls(currUrlValue);
 			List<String> urlsInPages = loader.getUrlsInPage();
 			List<String> nextUrls = urlService.filterUrls(website, currentUrl.getUrl(), urlsInPages);
@@ -101,12 +87,19 @@ public class Engine {
 		}
 	}
 
-	private boolean isValidUrl(String currUrlValue) {
-		boolean isValid = urlService.isValidUrl(website, currUrlValue);
-		if (!isValid)
-			System.out.println("The url " + currUrlValue + " is already saved or no pattern match it");
-		return isValid;
+	private void persistPayloads(URL currentUrl) {
+		payloadService.persistPayloads(currentUrl.getPayloads());
+		urlService.updateUrl(currentUrl);
+
 	}
+
+	/**
+	 * Check if the url is already exist in the database and if it's content
+	 * would be changed
+	 * 
+	 * 
+	 * @return
+	 */
 
 	private boolean isVisitedUrl(String url) {
 		return visitedUrls.contains(url);
@@ -129,10 +122,4 @@ public class Engine {
 		return url;
 	}
 
-	void sleep(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-		}
-	}
 }

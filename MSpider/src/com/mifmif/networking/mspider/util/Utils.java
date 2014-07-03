@@ -43,7 +43,7 @@ public class Utils {
 	 * @return
 	 */
 	private static String getELBeanName(Field field) {
-		String elBeanName = toFirstLower(field.getPattern().getUrlName());
+		String elBeanName = toFirstLower(field.getObjectModel().getName());
 		return elBeanName;
 
 	}
@@ -52,5 +52,12 @@ public class Utils {
 		String result = str.substring(1);
 		String firstLower = ("" + str.charAt(0)).toLowerCase();
 		return firstLower + result;
+	}
+
+	public static void sleep(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (Exception e) {
+		}
 	}
 }

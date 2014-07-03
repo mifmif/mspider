@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
+import com.mifmif.networking.mspider.model.DomainObjectModel;
 import com.mifmif.networking.mspider.model.Field;
-import com.mifmif.networking.mspider.model.URLParameter;
-import com.mifmif.networking.mspider.model.URLParameterType;
 import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
 
@@ -16,47 +15,80 @@ import com.mifmif.networking.mspider.model.Website;
  */
 public class Main {
 	WebsiteDao websiteDao = JpaDaoFactory.getJpaWebsiteDao();
+	private String QUESTION_TITLE_CSS_SELECTOR = "html body.question-page div.container div#content div div#question-header h1 a.question-hyperlink";
+	private String QUESTION_CSS_SELECTOR = "html body.question-page div.container div#content div div#mainbar div#question.question";
+	private String QUESTION_BODY_CSS_SELECTOR = "table tbody tr td.postcell div div.post-text";
+	private String ANSWER_IS_ACCEPTED_CSS_SELECTOR = ".vote-accepted-on";
+	private String ANSWER_VOTE_CSS_SELECTOR = ".vote-count-post";
+	private String ANSWER_BODY_CSS_SELECTOR = ".post-text";
+	private String ANSWER_CSS_SELECTOR = ".answer";
+	private String ANSWER_COMMENT_CSS_SELECTOR = ".comment-copy";
+	private String TAG_CSS_SELECTOR = "html body.question-page div.container div#content div div#mainbar div#question.question table tbody tr td.postcell div div.post-taglist";
 
 	public static void main(String[] args) throws IOException {
 		System.setProperty("java.net.useSystemProxies", "true");
-		Website website = new Main().bootstrap();
-		Engine engine = new Engine(website);
+		// Website website = new Main().bootstrap();
+		// Engine engine = new Engine(website);
+		Engine engine = new Engine("http://www.stackoverflow.com");
 		engine.start();
 	}
 
 	/**
-	 * Bootstrap Database and store a sample in the DB for testing purpose :
-	 * website with some urlPattern and fields and relation between them.
+	 * Bootstrap Database by storing 'http://www.stackoverflow.com' sitemap as a
+	 * sample in the DB for testing purpose : website with some urlPattern and
+	 * fields and relation between them. we just focus on
+	 * question/answer/vote/comment/tag fields
 	 */
 	Website bootstrap() {
-		String host = "http://stackoverflow.com";
-
+		// Create website instance
+		String host = "http://www.stackoverflow.com";
 		Website website = new Website(host);
+
 		// Create urls pattern
-		URLPattern questionsHome = new URLPattern(website, "/questions", "HomePage");
-		URLPattern nextQuestionsPage = new URLPattern(website, "/questions\\?page=[0-9]+&sort=newest", "NextPage");
-		URLPattern questionPage = new URLPattern(website, "/questions/[0-9]+/.+", "QuestionPage");
+		URLPattern questionsHome = URLPattern.builder().withWebsite(website).withUrlPattern("/questions").withUrlName("HomePage").withContentStatic(false)
+				.build();
+		URLPattern nextQuestionsPage = URLPattern.builder().withWebsite(website).withUrlPattern("/questions\\?page=[0-9]+&sort=newest").withUrlName("NextPage")
+				.withContentStatic(false).build();
+		URLPattern questionPage = URLPattern.builder().withWebsite(website).withUrlPattern("/questions/[0-9]+/.+").withUrlName("QuestionPage")
+				.withContentStatic(true).build();
 		URLPattern excludedPat1 = URLPattern.builder().withUrlPattern("/questions\\?page=[0-9]{3,}&sort=newest").withExcludeFrom(website).build();
+
 		// questionsHome mapping links to others pattern pages
 		questionsHome.getNextUrls().add(questionPage);
 		questionsHome.getNextUrls().add(nextQuestionsPage);
+
 		// nextQuestionsPage mapping links to others pattern pages
 		nextQuestionsPage.getNextUrls().add(questionPage);
 		nextQuestionsPage.getNextUrls().add(nextQuestionsPage);
+
+		// Create a domain object model
+		DomainObjectModel questionModel = new DomainObjectModel(website, "Question");
+
 		// Create fields
-		Field titleField = new Field(questionPage, "html body.question-page div.container div#content div div#question-header h1 a.question-hyperlink", "Title");
-		Field answerField = new Field(questionPage, ".answer", ".post-text", "Answer");
-		Field commentOfAnswerField = new Field(questionPage, ".comment-copy", "CommentOfAnswer");
-		Field voteOfAnswerField = new Field(questionPage, ".vote-count-post", "VoteOfAnswer");
-		Field isAcceptedAnswerField = new Field(questionPage, ".vote-accepted-on", "isAcceptedOfAnswer");
-		Field tagsField = new Field(questionPage,
-				"html body.question-page div.container div#content div div#mainbar div#question.question table tbody tr td.postcell div div.post-taglist",
-				"Tags");
-		Field questionField = new Field(questionPage, "html body.question-page div.container div#content div div#mainbar div#question.question",
-				"table tbody tr td.postcell div div.post-text", "Question");
+		Field titleField = new Field(questionModel, questionPage, QUESTION_TITLE_CSS_SELECTOR, "Title");
+		Field questionField = new Field(questionModel, questionPage, QUESTION_CSS_SELECTOR, QUESTION_BODY_CSS_SELECTOR, "Question");
+		Field answerField = new Field(questionModel, questionPage, ANSWER_CSS_SELECTOR, ANSWER_BODY_CSS_SELECTOR, "Answer");
+		Field commentOfAnswerField = new Field(questionModel, questionPage, ANSWER_COMMENT_CSS_SELECTOR, "CommentOfAnswer");
+		Field voteOfAnswerField = new Field(questionModel, questionPage, ANSWER_VOTE_CSS_SELECTOR, "VoteOfAnswer");
+		Field isAcceptedAnswerField = new Field(questionModel, questionPage, ANSWER_IS_ACCEPTED_CSS_SELECTOR, "isAcceptedOfAnswer");
+		Field tagsField = new Field(questionModel, questionPage, TAG_CSS_SELECTOR, "Tags");
 		answerField.setManyElements(true);
 		commentOfAnswerField.setManyElements(true);
+		tagsField.setManyElements(true);
+		tagsField.setSelectorForParentElement(true);
 
+		// attach field to the domain model
+		questionModel.getFields().add(titleField);
+		questionModel.getFields().add(questionField);
+		questionModel.getFields().add(tagsField);
+		questionModel.getFields().add(answerField);// we didn't add
+													// commentOfAnswerField and
+													// isAcceptedAnswerField and
+													// voteOfAnswerField because
+													// they belong to the field
+													// answer
+
+		// attach subfields to their parent
 		commentOfAnswerField.setParentField(answerField);
 		answerField.getSubFields().add(commentOfAnswerField);
 
@@ -66,21 +98,24 @@ public class Main {
 		isAcceptedAnswerField.setParentField(answerField);
 		answerField.getSubFields().add(isAcceptedAnswerField);
 
-		tagsField.setManyElements(true);
-		tagsField.setSelectorForParentElement(true);
-
 		// Add fields to urls pattern
 		questionPage.getFields().add(titleField);
 		questionPage.getFields().add(tagsField);
 		questionPage.getFields().add(questionField);
 		questionPage.getFields().add(answerField);
+
 		// add urls to the web site
 		website.setStartPage(questionsHome.getUrlPattern());
 		website.getPatterns().add(questionsHome);
 		website.getPatterns().add(nextQuestionsPage);
 		website.getPatterns().add(questionPage);
+
 		// add excluded urls to the web site
 		website.getExcludedPatterns().add(excludedPat1);
+
+		// add Domain object model to the web site
+		website.getObjectModels().add(questionModel);
+
 		// save website
 		websiteDao.persist(website);
 
