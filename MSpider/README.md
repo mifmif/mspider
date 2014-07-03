@@ -16,7 +16,7 @@ Define the sitemap : your web site and URL pattern that you want to navigate to,
 **example :**
 In this example we bootstrap Database by storing 'http://www.stackoverflow.com' sitemap as a sample ,  we just focus on question/answer/vote/comment/tag fields .
 
-
+```java
 
 		// Create website instance
 		String host = "http://www.stackoverflow.com";
@@ -100,8 +100,7 @@ In this example we bootstrap Database by storing 'http://www.stackoverflow.com' 
 		//Create engine and start data extraction
 		Engine engine = new Engine(website);
 		engine.start(); 
-
-
+```
 -**Features :**
 -
 
