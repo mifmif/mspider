@@ -143,4 +143,12 @@ public class URLParameter {
 	public void setParameterValues(List<ParameterValue> parameterValues) {
 		this.parameterValues = parameterValues;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

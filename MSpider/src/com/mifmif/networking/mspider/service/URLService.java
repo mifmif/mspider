@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.mifmif.networking.mspider.database.dao.api.PageTemplateDao;
 import com.mifmif.networking.mspider.database.dao.api.UrlDao;
-import com.mifmif.networking.mspider.database.dao.api.UrlPatternDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.URL;
@@ -35,7 +34,6 @@ import com.mifmif.networking.mspider.model.Website;
 public class URLService {
 	private UrlDao urlDao = JpaDaoFactory.getJpaUrlDao();
 	private PageTemplateDao templateDao = JpaDaoFactory.getJpaPageTemplateDao();
-	private UrlPatternDao urlPatternDao = JpaDaoFactory.getJpaUrlPatternDao();
 
 	private URLService() {
 	}
@@ -111,12 +109,21 @@ public class URLService {
 	 * @param urlValue
 	 * @return
 	 */
-	public URL prepareUrl(Website website, String urlValue) {
+	public URL prepareUrl(Website website, String urlValue, boolean useExsitingInstance) {
 		URL url = findUrlByWebsiteAndValue(website, urlValue);
-		if (url != null && !url.getPattern().isContentStatic())
+		if (useExsitingInstance && url != null && !url.getPattern().isContentStatic())
 			return url;
 		URLPattern pattern = findUrlPatternByUrl(website, urlValue);
 		url = new URL(pattern, urlValue);
+		urlDao.persist(url);
+		return url;
+	}
+
+	public URL prepareUrlByPattern(URLPattern urlPattern, String urlValue, boolean useExsitingInstance) {
+		URL url = findUrlByWebsiteAndValue(urlPattern.getWebsite(), urlValue);
+		if (useExsitingInstance && url != null && !url.getPattern().isContentStatic())
+			return url;
+		url = new URL(urlPattern, urlValue);
 		urlDao.persist(url);
 		return url;
 	}

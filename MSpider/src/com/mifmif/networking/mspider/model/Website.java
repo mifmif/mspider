@@ -153,6 +153,14 @@ public class Website {
 		this.strategy = strategy;
 	}
 
+	public void useCrawlingStrategy() {
+		this.strategy = LoadingStrategy.CRAWLING;
+	}
+
+	public void useParameterGenerationStrategy() {
+		this.strategy = LoadingStrategy.PARAMETERS_GENERATION;
+	}
+
 	public Map<String, String> getCookies() {
 		return cookies;
 	}

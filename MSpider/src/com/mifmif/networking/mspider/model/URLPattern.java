@@ -92,17 +92,18 @@ public class URLPattern {
 	private Website websiteToExcludeFrom;
 
 	public URLPattern() {
-	}
-
-	public URLPattern(Website website, String urlPattern, String urlName, boolean contentStatic) {
-		this.website = website;
-		this.urlPattern = urlPattern;
-		this.urlName = urlName;
-		this.contentStatic = contentStatic;
 		this.nextUrls = new ArrayList<URLPattern>();
 		this.fields = new ArrayList<Field>();
 		this.urls = new ArrayList<URL>();
 		this.parameters = new ArrayList<URLParameter>();
+	}
+
+	public URLPattern(Website website, String urlPattern, String urlName, boolean contentStatic) {
+		this();
+		this.website = website;
+		this.urlPattern = urlPattern;
+		this.urlName = urlName;
+		this.contentStatic = contentStatic;
 	}
 
 	public boolean hasParameters() {
@@ -191,6 +192,10 @@ public class URLPattern {
 		return postRequest;
 	}
 
+	public boolean isGetRequest() {
+		return !postRequest;
+	}
+
 	public void setPostRequest(boolean postRequest) {
 		this.postRequest = postRequest;
 	}
@@ -229,6 +234,16 @@ public class URLPattern {
 
 		public URLPatternBuilder withUrlPattern(String urlPattern) {
 			pattern.setUrlPattern(urlPattern);
+			return this;
+		}
+
+		public URLPatternBuilder withPostRequest() {
+			pattern.setPostRequest(true);
+			return this;
+		}
+
+		public URLPatternBuilder withGetRequest() {
+			pattern.setPostRequest(false);
 			return this;
 		}
 

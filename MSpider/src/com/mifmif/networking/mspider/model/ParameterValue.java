@@ -55,6 +55,15 @@ public class ParameterValue {
 	@JoinColumn(name = "URL_ID")
 	private URL url;
 
+	public ParameterValue() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ParameterValue(URL url, URLParameter urlParameter) {
+		this.url = url;
+		this.urlParameter = urlParameter;
+	}
+
 	public URLParameter getUrlParameter() {
 		return urlParameter;
 	}

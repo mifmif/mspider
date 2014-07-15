@@ -18,11 +18,14 @@
 package com.mifmif.networking.mspider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.DomainObjectModel;
 import com.mifmif.networking.mspider.model.Field;
+import com.mifmif.networking.mspider.model.URLParameter;
 import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
 
@@ -44,10 +47,11 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		// System.setProperty("java.net.useSystemProxies", "true");
-		Website website = new Main().bootstrap();
+		Website website = new Main().bootstrapParamLoading();
 		Engine engine = new Engine(website);
-		// Engine engine = new Engine("http://www.stackoverflow.com");
+		// Engine engine = new Engine("http://www.wordpress-fr.net");
 		engine.start();
+
 	}
 
 	/**
@@ -60,7 +64,6 @@ public class Main {
 		// Create website instance
 		String host = "http://www.stackoverflow.com";
 		Website website = new Website(host);
-
 		// Create urls pattern
 		URLPattern questionsHome = URLPattern.builder().withWebsite(website).withUrlPattern("/questions").withUrlName("HomePage").withContentStatic(false)
 				.build();
@@ -132,6 +135,45 @@ public class Main {
 
 		// add Domain object model to the web site
 		website.getObjectModels().add(questionModel);
+
+		// save website
+		websiteDao.persist(website);
+
+		return website;
+	}
+
+	/**
+	 * Bootstrap Database by storing 'http://www.stackoverflow.com' sitemap as a
+	 * sample in the DB for testing purpose : website with some urlPattern and
+	 * fields and relation between them. we just focus on
+	 * question/answer/vote/comment/tag fields
+	 */
+	Website bootstrapParamLoading() {
+		// Create website instance
+		String host = "http://www.wordpress-fr.net";
+		Website website = new Website(host);
+		website.useParameterGenerationStrategy();
+		URLPattern nodePage = URLPattern.builder().withWebsite(website).withUrlPattern("/support/viewtopic.php").withUrlName("DrupalNode")
+				.withContentStatic(false).build();
+		URLParameter idParameter = new URLParameter(nodePage, "id", "10[0-9]{2}");
+		nodePage.getParameters().add(idParameter);
+		// Create a domain object model
+		DomainObjectModel nodeModel = new DomainObjectModel(website, "Thread");
+
+		// Create fields
+		Field titleField = new Field(nodeModel, nodePage, "title", "Title");
+
+		// attach field to the domain model
+		nodeModel.getFields().add(titleField);
+
+		// Add fields to urls pattern
+		nodePage.getFields().add(titleField);
+
+		// add urls to the web site
+		website.getPatterns().add(nodePage);
+
+		// add Domain object model to the web site
+		website.getObjectModels().add(nodeModel);
 
 		// save website
 		websiteDao.persist(website);

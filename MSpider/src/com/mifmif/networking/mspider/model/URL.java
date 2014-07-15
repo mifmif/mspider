@@ -39,7 +39,9 @@ import javax.persistence.UniqueConstraint;
  * 
  */
 @Entity
-@Table(name = "URL", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_VALUE", "URL_PATTERN_ID" }) })
+@Table(name = "URL")
+// , uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_VALUE",
+// "URL_PATTERN_ID" }) }
 @NamedQueries({ @NamedQuery(name = "Url.findByUrlPatternAndValue", query = "SELECT u FROM URL u WHERE u.url = :url and u.pattern.urlPattern = :urlPattern "),
 		@NamedQuery(name = "Url.findByWebsiteAndValue", query = "SELECT u FROM URL u WHERE u.url = :url and u.pattern.website = :website ") })
 public class URL {

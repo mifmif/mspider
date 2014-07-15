@@ -136,6 +136,9 @@ public class URLLoader {
 		// connection
 	}
 
+	/**
+	 * Set parameters of the url in the request that will be sent .
+	 */
 	private void setParameters() {
 		boolean hasParameters = url.getParameters().size() != 0;
 		if (hasParameters)

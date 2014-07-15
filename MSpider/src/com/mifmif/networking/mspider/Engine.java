@@ -24,7 +24,9 @@ import java.util.Queue;
 
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.URL;
+import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.service.ParameterizedURLLoadProccess;
 import com.mifmif.networking.mspider.service.PayloadService;
 import com.mifmif.networking.mspider.service.URLLoader;
 import com.mifmif.networking.mspider.service.URLService;
@@ -68,6 +70,11 @@ public class Engine {
 	}
 
 	private void loadByParamsGeneration() {
+
+		for (URLPattern urlPattern : website.getPatterns()) {
+			ParameterizedURLLoadProccess urlPatternLoadProccess = new ParameterizedURLLoadProccess(urlPattern);
+			urlPatternLoadProccess.start();
+		}
 		// TODO start a list of thread, each one for a url of the website, each
 		// thread will generate parameters and use them in the request .
 	}
@@ -132,7 +139,7 @@ public class Engine {
 	}
 
 	private URL prepareUrl(String urlValue) {
-		URL url = urlService.prepareUrl(website, urlValue);
+		URL url = urlService.prepareUrl(website, urlValue, true);
 		if (url == null) {
 			System.out.println("Cannot prepare url " + urlValue);
 		}
