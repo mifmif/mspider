@@ -16,20 +16,17 @@
  */
 package com.mifmif.networking.mspider.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * PageTemplate are constructed from one or more concrete page loaded from url
@@ -39,42 +36,41 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "PAGE_TEMPLATE")
-public class PageTemplate {
+@Table(name = "RESOURCE", uniqueConstraints = { @UniqueConstraint(columnNames = { "RESOURCE_DIRECTORY", "RESOURCE_RELATIVE_PATH", "PAGE_TEMPLATE_ID" }) })
+public class Resource {
 
 	@Id
-	@SequenceGenerator(name = "PAGE_TEMPLATE_SEQ_GEN", sequenceName = "PAGE_TEMPLATE_SEQ_GEN")
-	@GeneratedValue(generator = "PAGE_TEMPLATE_SEQ_GEN", strategy = GenerationType.TABLE)
+	@SequenceGenerator(name = "RESOURCE_SEQ_GEN", sequenceName = "RESOURCE_SEQ_GEN")
+	@GeneratedValue(generator = "RESOURCE_SEQ_GEN", strategy = GenerationType.TABLE)
 	@Column(name = "ID")
 	private Long id;
 	@Lob
 	@Column(name = "CONTENT")
 	private String content;
 	@OneToOne
-	private URLPattern pattern;
-	@Lob
-	@Column(name = "BASE_PAGE_CONTENT")
-	private String basePageContent;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pageTemplate")
-	private List<Resource> resources;
+	@JoinColumn(name = "PAGE_TEMPLATE_ID")
+	private PageTemplate pageTemplate;
+	@Column(name = "RESOURCE_DIRECTORY")
+	private String resourceDirectory;
+	@Column(name = "RESOURCE_RELATIVE_PATH")
+	private String resourceRelativePath;
 
 	/**
 	 * @param pattern
 	 * @param basePageContent
 	 * @param templateContent
 	 */
-	public PageTemplate(URLPattern pattern, String basePageContent, String templateContent) {
-		this.pattern = pattern;
-		this.basePageContent = basePageContent;
-		this.content = templateContent;
-		resources = new ArrayList<Resource>();
+	public Resource(PageTemplate pageTemplate, String resourceDirectory, String resourceRelativeUrl, String resourceContent) {
+		this.setPageTemplate(pageTemplate);
+		this.resourceDirectory = resourceDirectory;
+		this.setResourceRelativePath(resourceRelativeUrl);
+		this.content = resourceContent;
 	}
 
 	/**
 	 * 
 	 */
-	public PageTemplate() {
-		// TODO Auto-generated constructor stub
+	public Resource() {
 	}
 
 	public String getContent() {
@@ -93,34 +89,28 @@ public class PageTemplate {
 		this.id = id;
 	}
 
-	public URLPattern getPattern() {
-		return pattern;
+	public PageTemplate getPageTemplate() {
+		return pageTemplate;
 	}
 
-	public void setPattern(URLPattern pattern) {
-		this.pattern = pattern;
+	public void setPageTemplate(PageTemplate pageTemplate) {
+		this.pageTemplate = pageTemplate;
 	}
 
-	/**
-	 * @return the basePageContent
-	 */
-	public String getBasePageContent() {
-		return basePageContent;
+	public String getResourceDirectory() {
+		return resourceDirectory;
 	}
 
-	/**
-	 * @param basePageContent
-	 *            the basePageContent to set
-	 */
-	public void setBasePageContent(String basePageContent) {
-		this.basePageContent = basePageContent;
+	public void setResourceDirectory(String resourceDirectory) {
+		this.resourceDirectory = resourceDirectory;
 	}
 
-	public List<Resource> getResources() {
-		return resources;
+	public String getResourceRelativePath() {
+		return resourceRelativePath;
 	}
 
-	public void setResources(List<Resource> resources) {
-		this.resources = resources;
+	public void setResourceRelativePath(String resourceRelativePath) {
+		this.resourceRelativePath = resourceRelativePath;
 	}
+
 }

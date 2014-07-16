@@ -75,6 +75,7 @@ public class URLPattern {
 	private PageTemplate template;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pattern")
 	private List<URLParameter> parameters;
+
 	/**
 	 * if true then the method to request the url that match this pattern is
 	 * POST, else , GET is used.

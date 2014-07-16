@@ -14,6 +14,7 @@
 		<class>com.mifmif.networking.mspider.model.PageTemplate</class>
 		<class>com.mifmif.networking.mspider.model.DomainObjectModel</class>
 		<class>com.mifmif.networking.mspider.model.DomainObjectInstance</class>
+		<class>com.mifmif.networking.mspider.model.Resource</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mspider" />

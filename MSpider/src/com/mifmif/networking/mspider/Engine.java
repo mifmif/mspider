@@ -94,8 +94,7 @@ public class Engine {
 			try {
 				loader.load();
 				if (currentUrl.getPattern().getTemplate() == null) {
-					PageTemplate template = loader.buildTemplate();
-					urlService.persistTemplate(template);
+					buildPageTemplate(loader);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -115,6 +114,11 @@ public class Engine {
 		payloadService.persistPayloads(currentUrl.getPayloads());
 		urlService.updateUrl(currentUrl);
 
+	}
+
+	private void buildPageTemplate(URLLoader loader) {
+		PageTemplate template = loader.buildTemplate();
+		urlService.persistTemplate(template);
 	}
 
 	/**

@@ -31,6 +31,7 @@ import com.mifmif.networking.mspider.model.Field;
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.ParameterValue;
 import com.mifmif.networking.mspider.model.Payload;
+import com.mifmif.networking.mspider.model.Resource;
 import com.mifmif.networking.mspider.model.URL;
 import com.mifmif.networking.mspider.util.Utils;
 
@@ -42,6 +43,7 @@ public class URLLoader {
 	private URL url;
 	private Connection connection;
 	private Document document;
+	private PageTemplate pageTemplate;
 
 	public URLLoader(URL url) {
 		this.url = url;
@@ -81,8 +83,9 @@ public class URLLoader {
 			buildFieldTemplate(field, templateDocument);
 		}
 		String templateContent = templateDocument.toString();
-		PageTemplate template = new PageTemplate(url.getPattern(), baseContent, templateContent);
-		return template;
+		pageTemplate = new PageTemplate(url.getPattern(), baseContent, templateContent);
+		prepareResourcesPageTamplate();
+		return pageTemplate;
 	}
 
 	/**
@@ -100,9 +103,9 @@ public class URLLoader {
 
 		if (!field.isManyElements()) {
 			Element innerElmnt = elements.first();
-			String ElFieldExpression = Utils.getElFieldExpression(field);
+			String elFieldExpression = Utils.getElFieldExpression(field);
 			innerElmnt.empty();
-			innerElmnt.appendText(ElFieldExpression);
+			innerElmnt.appendText(elFieldExpression);
 			buildsubFieldTemplate(field, innerElmnt);
 		} else {
 			for (Element innerElmnt : elements) {
@@ -221,6 +224,76 @@ public class URLLoader {
 			urls.add(url);
 		}
 		return urls;
+	}
+
+	/**
+	 * prepare and return the list of resource contained in the page loaded
+	 * 
+	 * @return
+	 */
+	private void prepareResourcesPageTamplate() {
+		List<String> resourcesLink = getResourcesLinkInPage();
+		List<Resource> resources = new ArrayList<Resource>();
+		for (String rsrcLink : resourcesLink) {
+			Resource resource = loadResource(rsrcLink);
+			resources.add(resource);
+		}
+		pageTemplate.setResources(resources);
+	}
+
+	private Resource loadResource(String rsrcLink) {
+		String rsrcDir = "";
+		String rsrcRelativePath = rsrcLink;
+		if (rsrcLink.startsWith("//")) {
+			rsrcLink = "http:" + rsrcLink;
+		}
+		if (!rsrcLink.startsWith("http")) {
+			rsrcDir = url.getUrlDirectory();
+		}
+		String rsrcFullPath = rsrcDir + rsrcLink;
+		Connection connection = Jsoup.connect(rsrcFullPath);
+		connection.ignoreContentType(true);
+		try {
+			Document document = connection.get();
+			String resourceContent = document.text();
+			Resource resource = new Resource(pageTemplate, rsrcDir, rsrcRelativePath, resourceContent);
+			return resource;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<String> getResourcesLinkInPage() {
+		List<String> resources = new ArrayList<String>();
+		resources.addAll(getCssLink());
+		resources.addAll(getScriptLink());
+		return resources;
+	}
+
+	private List<String> getCssLink() {
+		Elements elements = document.select("link");
+		List<String> cssLinks = new ArrayList<String>();
+		for (Element element : elements) {
+			String type = element.attr("type");
+			if (!"text/css".equals(type))
+				continue;
+			String link = element.attr("href");
+			cssLinks.add(link);
+		}
+		return cssLinks;
+	}
+
+	private List<String> getScriptLink() {
+		Elements elements = document.select("script");
+		List<String> scriptLinks = new ArrayList<String>();
+		for (Element element : elements) {
+			String link = element.attr("src");
+			if (link.equals(""))
+				continue;
+			scriptLinks.add(link);
+		}
+		return scriptLinks;
 	}
 
 }

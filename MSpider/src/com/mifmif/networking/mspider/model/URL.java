@@ -82,6 +82,15 @@ public class URL {
 		return pattern.getWebsite().getHost() + url;
 	}
 
+	public String getUrlDirectory() {
+		StringBuilder fullUrl = new StringBuilder(pattern.getWebsite().getHost() + url);
+		fullUrl = fullUrl.reverse();
+		int indexOfSlash = fullUrl.indexOf("/");
+
+		String urlDir = fullUrl.reverse().substring(0, fullUrl.length() - indexOfSlash);
+		return urlDir;
+	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
