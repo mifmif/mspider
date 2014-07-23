@@ -113,6 +113,8 @@ In this example we bootstrap Database by storing 'http://www.stackoverflow.com' 
 
 -Create template for each URLPattern.
 
+-Regex to String generation : build value of parameters from regular expression and use them in requests. 
+
 -Structured storage (Data storage is configured from META-INF/persistance.xml).
 
 -Compatibility with all RDBMS Data stores (Oracle,PostgresSQL,MySQL..)
@@ -121,7 +123,6 @@ In this example we bootstrap Database by storing 'http://www.stackoverflow.com' 
 **TODO :**
 -
 
--Regex to String generation : build value of parameters from regular expression and use them in requests. 
 
 -For data extracted from a web site ,define dynamically class  for each DomainObjectModel used , it's Field will present the attributes of the new defined class.
 
