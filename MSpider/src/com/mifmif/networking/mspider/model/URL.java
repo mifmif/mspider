@@ -34,6 +34,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
+
 /**
  * @author y.mifrah
  * 

@@ -20,8 +20,8 @@ import java.util.List;
 
 import com.mifmif.networking.mspider.database.dao.api.DomainObjectInstanceDao;
 import com.mifmif.networking.mspider.model.DomainObjectInstance;
-import com.mifmif.networking.mspider.model.Field;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.model.metamodel.Field;
 
 /**
  * @author y.mifrah

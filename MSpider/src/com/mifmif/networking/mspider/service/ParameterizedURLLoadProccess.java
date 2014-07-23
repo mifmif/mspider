@@ -27,8 +27,8 @@ import com.mifmif.networking.mspider.database.dao.api.ParameterValueDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.ParameterValue;
 import com.mifmif.networking.mspider.model.URL;
-import com.mifmif.networking.mspider.model.URLParameter;
-import com.mifmif.networking.mspider.model.URLPattern;
+import com.mifmif.networking.mspider.model.metamodel.URLParameter;
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
 import com.mifmif.networking.mspider.util.Utils;
 
 /**

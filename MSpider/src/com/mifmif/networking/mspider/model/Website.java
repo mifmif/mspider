@@ -40,6 +40,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
+
 /**
  * Website entity model that present the structure of the website ,it contain
  * the list of informations that will be used to query the website,it group also

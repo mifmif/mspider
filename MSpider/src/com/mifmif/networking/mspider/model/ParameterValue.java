@@ -26,6 +26,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.mifmif.networking.mspider.model.metamodel.URLParameter;
+
 /**
  * It present the parameter value used to query one <code>URL</code> , it's
  * attached to a <code>URLParameter</code> to define the name of parameter to

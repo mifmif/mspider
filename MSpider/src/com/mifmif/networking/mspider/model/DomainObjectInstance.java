@@ -33,6 +33,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
+
 /**
  * Class that present a domain model object in a website,
  * 

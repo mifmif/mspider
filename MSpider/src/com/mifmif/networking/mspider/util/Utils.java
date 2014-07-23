@@ -16,7 +16,7 @@
  */
 package com.mifmif.networking.mspider.util;
 
-import com.mifmif.networking.mspider.model.Field;
+import com.mifmif.networking.mspider.model.metamodel.Field;
 
 /**
  * @author y.mifrah

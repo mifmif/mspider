@@ -27,12 +27,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.mifmif.networking.mspider.model.Field;
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.ParameterValue;
 import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.Resource;
 import com.mifmif.networking.mspider.model.URL;
+import com.mifmif.networking.mspider.model.metamodel.Field;
 import com.mifmif.networking.mspider.util.Utils;
 
 /**

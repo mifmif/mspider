@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mifmif.networking.mspider.model;
+package com.mifmif.networking.mspider.model.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.mifmif.networking.mspider.model.PageTemplate;
+import com.mifmif.networking.mspider.model.URL;
+import com.mifmif.networking.mspider.model.Website;
 import com.sun.istack.Nullable;
 
 /**

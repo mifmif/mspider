@@ -22,9 +22,9 @@ import com.mifmif.networking.mspider.database.dao.api.DomainObjectInstanceDao;
 import com.mifmif.networking.mspider.database.dao.api.PayloadDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.DomainObjectInstance;
-import com.mifmif.networking.mspider.model.DomainObjectModel;
 import com.mifmif.networking.mspider.model.Payload;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
 
 public class PayloadService {
 	private PayloadDao payloadDao = JpaDaoFactory.getJpaPayloadDao();

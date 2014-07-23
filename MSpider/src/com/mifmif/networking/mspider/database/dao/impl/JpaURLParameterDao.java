@@ -17,7 +17,7 @@
 package com.mifmif.networking.mspider.database.dao.impl;
 
 import com.mifmif.networking.mspider.database.dao.api.URLParameterDao;
-import com.mifmif.networking.mspider.model.URLParameter;
+import com.mifmif.networking.mspider.model.metamodel.URLParameter;
 
 /**
  * @author y.mifrah

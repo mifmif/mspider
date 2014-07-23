@@ -24,8 +24,8 @@ import com.mifmif.networking.mspider.database.dao.api.UrlDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.URL;
-import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
 
 /**
  * @author y.mifrah

@@ -24,8 +24,8 @@ import java.util.Queue;
 
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.URL;
-import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
 import com.mifmif.networking.mspider.service.ParameterizedURLLoadProccess;
 import com.mifmif.networking.mspider.service.PayloadService;
 import com.mifmif.networking.mspider.service.URLLoader;

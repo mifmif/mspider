@@ -26,6 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import com.mifmif.networking.mspider.model.metamodel.Field;
+
 /**
  * The content of a field in a concrete url.
  * 

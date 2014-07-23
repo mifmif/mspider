@@ -17,7 +17,7 @@
  */
 package com.mifmif.networking.mspider.database.dao.api;
 
-import com.mifmif.networking.mspider.model.DomainObjectModel;
+import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
 
 /**
  * @author y.mifrah

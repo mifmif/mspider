@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mifmif.networking.mspider.model;
+package com.mifmif.networking.mspider.model.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.mifmif.networking.mspider.model.Website;
 
 /**
  * Class that present a domain model object in a website,

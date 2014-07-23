@@ -31,6 +31,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
+
 /**
  * PageTemplate are constructed from one or more concrete page loaded from url
  * that match the associated urlPattern.

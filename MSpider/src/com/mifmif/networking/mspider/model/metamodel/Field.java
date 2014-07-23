@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mifmif.networking.mspider.model;
+package com.mifmif.networking.mspider.model.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+
+import com.mifmif.networking.mspider.model.Payload;
 
 /**
  * Model of an element component of a page. defined by the css selector path in
