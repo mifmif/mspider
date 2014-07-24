@@ -18,16 +18,14 @@
 package com.mifmif.networking.mspider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.mifmif.networking.mspider.database.dao.api.WebsiteDao;
 import com.mifmif.networking.mspider.database.dao.impl.JpaDaoFactory;
-import com.mifmif.networking.mspider.model.DomainObjectModel;
-import com.mifmif.networking.mspider.model.Field;
-import com.mifmif.networking.mspider.model.URLParameter;
-import com.mifmif.networking.mspider.model.URLPattern;
 import com.mifmif.networking.mspider.model.Website;
+import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
+import com.mifmif.networking.mspider.model.metamodel.Field;
+import com.mifmif.networking.mspider.model.metamodel.URLParameter;
+import com.mifmif.networking.mspider.model.metamodel.URLPattern;
 
 /**
  * @author y.mifrah
