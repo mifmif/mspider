@@ -45,7 +45,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		// System.setProperty("java.net.useSystemProxies", "true");
-		Website website = new Main().bootstrapParamLoading();
+		Website website = new Main().bootstrap();
 		Engine engine = new Engine(website);
 		// Engine engine = new Engine("http://www.wordpress-fr.net");
 		engine.start();

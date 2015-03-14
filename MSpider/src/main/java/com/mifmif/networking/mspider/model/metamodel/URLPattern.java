@@ -39,7 +39,6 @@ import javax.persistence.UniqueConstraint;
 import com.mifmif.networking.mspider.model.PageTemplate;
 import com.mifmif.networking.mspider.model.URL;
 import com.mifmif.networking.mspider.model.Website;
-import com.sun.istack.Nullable;
 
 /**
  * Class that present a <code>URLPattern</code> expression in a website. one
@@ -50,8 +49,10 @@ import com.sun.istack.Nullable;
  *
  */
 @Entity
-@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
-@NamedQueries({ @NamedQuery(name = "UrlPattern.findByPatternValue", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
+@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = {
+		"URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
+@NamedQueries({
+		@NamedQuery(name = "UrlPattern.findByPatternValue", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
 		@NamedQuery(name = "UrlPattern.findAllByWebsite", query = "SELECT u FROM URLPattern u WHERE u.website = :website ") })
 public class URLPattern {
 
@@ -85,14 +86,13 @@ public class URLPattern {
 	 */
 	@Column(name = "POST_REQUEST")
 	private boolean postRequest;
-	@Nullable
+
 	@ManyToOne
-	@JoinColumn(name = "ASSOCIATED_WEBSITE_ID")
+	@JoinColumn(name = "ASSOCIATED_WEBSITE_ID", nullable = true)
 	private Website website;
 	private boolean contentStatic;
-	@Nullable
 	@ManyToOne
-	@JoinColumn(name = "EXCLUDED_FROM_WEBSITE_ID")
+	@JoinColumn(name = "EXCLUDED_FROM_WEBSITE_ID", nullable = true)
 	private Website websiteToExcludeFrom;
 
 	public URLPattern() {
@@ -102,7 +102,8 @@ public class URLPattern {
 		this.parameters = new ArrayList<URLParameter>();
 	}
 
-	public URLPattern(Website website, String urlPattern, String urlName, boolean contentStatic) {
+	public URLPattern(Website website, String urlPattern, String urlName,
+			boolean contentStatic) {
 		this();
 		this.website = website;
 		this.urlPattern = urlPattern;
