@@ -49,10 +49,8 @@ import com.mifmif.networking.mspider.model.Website;
  *
  */
 @Entity
-@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
-@NamedQueries({
-		@NamedQuery(name = "UrlPattern.findByPatternValue", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
+@Table(name = "URL_PATTERN", uniqueConstraints = { @UniqueConstraint(columnNames = { "URL_PATTERN_VALUE", "ASSOCIATED_WEBSITE_ID" }) })
+@NamedQueries({ @NamedQuery(name = "UrlPattern.findByPatternValue", query = "SELECT u FROM URLPattern u WHERE u.urlPattern = :urlPattern "),
 		@NamedQuery(name = "UrlPattern.findAllByWebsite", query = "SELECT u FROM URLPattern u WHERE u.website = :website ") })
 public class URLPattern {
 
@@ -102,8 +100,7 @@ public class URLPattern {
 		this.parameters = new ArrayList<URLParameter>();
 	}
 
-	public URLPattern(Website website, String urlPattern, String urlName,
-			boolean contentStatic) {
+	public URLPattern(Website website, String urlPattern, String urlName, boolean contentStatic) {
 		this();
 		this.website = website;
 		this.urlPattern = urlPattern;
@@ -277,5 +274,10 @@ public class URLPattern {
 			pattern.setFields(new ArrayList<Field>());
 			pattern.setUrls(new ArrayList<URL>());
 		}
+	}
+
+	@Override
+	public String toString() {
+		return urlPattern;
 	}
 }

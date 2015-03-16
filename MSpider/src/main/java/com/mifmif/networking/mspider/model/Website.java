@@ -88,6 +88,7 @@ public class Website {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "website")
 	private List<DomainObjectModel> objectModels;
 
+	private boolean buildTemplate = false;
 	/**
 	 * Loading strategy applied to load information from the website , crawling
 	 * for link following or parameter generation to generate parameter used to
@@ -178,5 +179,13 @@ public class Website {
 
 	public void setObjectModels(List<DomainObjectModel> objectModels) {
 		this.objectModels = objectModels;
+	}
+
+	public boolean isBuildTemplate() {
+		return buildTemplate;
+	}
+
+	public void setBuildTemplate(boolean buildTemplate) {
+		this.buildTemplate = buildTemplate;
 	}
 }

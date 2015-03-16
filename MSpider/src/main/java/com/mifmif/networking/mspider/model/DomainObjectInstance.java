@@ -64,34 +64,19 @@ public class DomainObjectInstance {
 	@JoinColumn(name = "MODEL_ID")
 	private DomainObjectModel model;
 
-	/**
- * 
- */
 	public DomainObjectInstance() {
-		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @param name
-	 * @param model
-	 */
 	public DomainObjectInstance(DomainObjectModel model) {
 		super();
 		this.model = model;
 		payloads = new ArrayList<Payload>();
 	}
 
-	/**
-	 * @return the payloads
-	 */
 	public List<Payload> getPayloads() {
 		return payloads;
 	}
 
-	/**
-	 * @param payloads
-	 *            the payloads to set
-	 */
 	public void setPayloads(List<Payload> payloads) {
 		this.payloads = payloads;
 	}

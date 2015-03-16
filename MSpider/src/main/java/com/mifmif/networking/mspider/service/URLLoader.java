@@ -44,6 +44,7 @@ public class URLLoader {
 	private Connection connection;
 	private Document document;
 	private PageTemplate pageTemplate;
+	private String userAgent = "Mozilla/5.0";
 
 	public URLLoader(URL url) {
 		this.url = url;
@@ -57,6 +58,7 @@ public class URLLoader {
 	 */
 	public void load() throws IOException {
 		connection = Jsoup.connect(url.getFullUrl());
+		setHeaders();
 		setCookies();
 		setParameters();
 		if (url.getPattern().isPostRequest())
@@ -135,6 +137,7 @@ public class URLLoader {
 	}
 
 	private void setHeaders() {
+		connection.userAgent(userAgent);
 		// TODO get headers from the website instance and set them to the
 		// connection
 	}
@@ -294,6 +297,14 @@ public class URLLoader {
 			scriptLinks.add(link);
 		}
 		return scriptLinks;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 
 }

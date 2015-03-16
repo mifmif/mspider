@@ -93,7 +93,7 @@ public class Engine {
 			URLLoader loader = new URLLoader(currentUrl);
 			try {
 				loader.load();
-				if (currentUrl.getPattern().getTemplate() == null) {
+				if (website.isBuildTemplate() && currentUrl.getPattern().getTemplate() == null) {
 					buildPageTemplate(loader);
 				}
 			} catch (Exception e) {
