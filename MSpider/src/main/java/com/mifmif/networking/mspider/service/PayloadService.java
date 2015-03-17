@@ -60,7 +60,7 @@ public class PayloadService {
 			// DomainObjectInstance, so we look for one principal field and we
 			// take the objectmodel associated to it
 			if (payload.getField().getParentField() == null) {
-				objectModel = payload.getField().getObjectModel();
+				objectModel = payload.getField().getDomainObjectModel();
 				break;
 			}
 		DomainObjectInstance newObjectInstance = new DomainObjectInstance(objectModel);
@@ -86,7 +86,7 @@ public class PayloadService {
 	 * @return
 	 */
 	private DomainObjectInstance getObjectInstanceByFieldIdentifierValue(Payload payload) {
-		DomainObjectModel objectModel = payload.getField().getObjectModel();
+		DomainObjectModel objectModel = payload.getField().getDomainObjectModel();
 		String objectModelName = objectModel.getName();
 		String fieldIdentifier = objectModel.getIdentifierFieldName();
 		if (!payload.getName().equals(fieldIdentifier))

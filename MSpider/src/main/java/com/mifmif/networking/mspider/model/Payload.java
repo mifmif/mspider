@@ -16,6 +16,8 @@
  */
 package com.mifmif.networking.mspider.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +26,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import com.mifmif.networking.mspider.model.metamodel.Field;
@@ -46,8 +49,8 @@ public class Payload {
 	private URL url;
 
 	@ManyToOne
-	@JoinColumn(name = "OBJECT_INSTANCE_ID")
-	private DomainObjectInstance objectInsance;
+	@JoinColumn(name = "DOMAIN_OBJECT_INSTANCE_ID")
+	private DomainObjectInstance domainObjectInstance;
 
 	@Column(name = "VALUE", length = 65000)
 	private String value;
@@ -56,13 +59,20 @@ public class Payload {
 	@JoinColumn(name = "FIELD_ID")
 	private Field field;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Payload> subPayloads;
+	@ManyToOne
+	@JoinColumn(name = "PARENT_PAYLOAD_ID")
+	private Payload parentPayload;
+
 	public Payload() {
 	}
 
-	public Payload(String value, Field field, URL url) {
+	public Payload(String value, Field field, URL url, Payload parentPayload) {
 		this.field = field;
 		this.url = url;
 		this.value = value;
+		this.parentPayload = parentPayload;
 	}
 
 	public Field getField() {
@@ -98,7 +108,7 @@ public class Payload {
 	 * @return the objectInsance
 	 */
 	public DomainObjectInstance getObjectInsance() {
-		return objectInsance;
+		return getDomainObjectInstance();
 	}
 
 	/**
@@ -106,7 +116,7 @@ public class Payload {
 	 *            the objectInsance to set
 	 */
 	public void setObjectInsance(DomainObjectInstance objectInsance) {
-		this.objectInsance = objectInsance;
+		this.setDomainObjectInstance(objectInsance);
 	}
 
 	/**
@@ -122,5 +132,29 @@ public class Payload {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public List<Payload> getSubPayloads() {
+		return subPayloads;
+	}
+
+	public void setSubPayloads(List<Payload> subPayloads) {
+		this.subPayloads = subPayloads;
+	}
+
+	public Payload getParentPayload() {
+		return parentPayload;
+	}
+
+	public void setParentPayload(Payload parentPayload) {
+		this.parentPayload = parentPayload;
+	}
+
+	public DomainObjectInstance getDomainObjectInstance() {
+		return domainObjectInstance;
+	}
+
+	public void setDomainObjectInstance(DomainObjectInstance domainObjectInstance) {
+		this.domainObjectInstance = domainObjectInstance;
 	}
 }

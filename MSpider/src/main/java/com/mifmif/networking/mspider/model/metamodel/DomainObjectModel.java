@@ -51,7 +51,7 @@ public class DomainObjectModel {
 	@Column(name = "NAME")
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "objectModel", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "domainObjectModel", orphanRemoval = true)
 	private List<Field> fields;
 
 	/**

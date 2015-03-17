@@ -44,9 +44,9 @@ import com.mifmif.networking.mspider.model.metamodel.DomainObjectModel;
 @Entity
 @Table(name = "DOMAIN_OBJECT_INSTANCE")
 @NamedQueries({
-		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance WHERE objectInstance.model.website = :website and  objectInstance.model.name= :modelName"),
-		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.model.name= :modelName AND objectInstance.model.website = :website AND p.field.objectModel=objectInstance.model   AND p.field.name= :payloadName   "),
-		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadNameAndValue", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.model.name= :modelName AND objectInstance.model.website = :website AND p.field.objectModel=objectInstance.model   AND p.field.name= :payloadName  AND p.value= :payloadValue ")
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance WHERE objectInstance.domainObjectModel.website = :website and  objectInstance.domainObjectModel.name= :modelName"),
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadName", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.domainObjectModel.name= :modelName AND objectInstance.domainObjectModel.website = :website AND p.field.domainObjectModel=objectInstance.domainObjectModel   AND p.field.name= :payloadName   "),
+		@NamedQuery(name = "DomainObjectInstance.findAllByWebsiteAndModelNameAndPayloadNameAndValue", query = "SELECT objectInstance FROM DomainObjectInstance objectInstance , Payload p WHERE    objectInstance.domainObjectModel.name= :modelName AND objectInstance.domainObjectModel.website = :website AND p.field.domainObjectModel=objectInstance.domainObjectModel   AND p.field.name= :payloadName  AND p.value= :payloadValue ")
 
 })
 public class DomainObjectInstance {
@@ -57,19 +57,19 @@ public class DomainObjectInstance {
 	@Column(name = "ID")
 	private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "objectInsance", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "domainObjectInstance", orphanRemoval = true)
 	private List<Payload> payloads;
 
 	@ManyToOne
-	@JoinColumn(name = "MODEL_ID")
-	private DomainObjectModel model;
+	@JoinColumn(name = "DOMAIN_OBJECT_MODEL_ID")
+	private DomainObjectModel domainObjectModel;
 
 	public DomainObjectInstance() {
 	}
 
 	public DomainObjectInstance(DomainObjectModel model) {
 		super();
-		this.model = model;
+		this.setDomainObjectModel(model);
 		payloads = new ArrayList<Payload>();
 	}
 
@@ -87,6 +87,14 @@ public class DomainObjectInstance {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public DomainObjectModel getDomainObjectModel() {
+		return domainObjectModel;
+	}
+
+	public void setDomainObjectModel(DomainObjectModel domainObjectModel) {
+		this.domainObjectModel = domainObjectModel;
 	}
 
 }

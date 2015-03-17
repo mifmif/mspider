@@ -56,7 +56,7 @@ public class Utils {
 	 * @return
 	 */
 	private static String getELBeanName(Field field) {
-		String elBeanName = toFirstLower(field.getObjectModel().getName());
+		String elBeanName = toFirstLower(field.getDomainObjectModel().getName());
 		return elBeanName;
 
 	}

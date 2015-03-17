@@ -50,7 +50,7 @@ public class ParameterValue {
 	private String value;
 
 	@ManyToOne
-	@JoinColumn(name = "URLPARAMETER_ID")
+	@JoinColumn(name = "URL_PARAMETER_ID")
 	private URLParameter urlParameter;
 
 	@ManyToOne

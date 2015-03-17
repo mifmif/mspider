@@ -71,20 +71,21 @@ public class Field {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Field> subFields;
 	@ManyToOne
+	@JoinColumn(name = "PARENT_FIELD_ID")
 	private Field parentField;
 	@Enumerated(EnumType.STRING)
 	private FieldType type = FieldType.TEXT;
 
 	@ManyToOne
-	@JoinColumn(name = "OBJECT_MODEL_ID")
-	private DomainObjectModel objectModel;
+	@JoinColumn(name = "DOMAIN_OBJECT_MODEL_ID")
+	private DomainObjectModel domainObjectModel;
 
 	public Field() {
 	}
 
 	public Field(DomainObjectModel objectModel, URLPattern pattern, String selector, String name) {
 		super();
-		this.objectModel = objectModel;
+		this.domainObjectModel = objectModel;
 		this.pattern = pattern;
 		this.selector = selector;
 		this.name = name;
@@ -195,18 +196,15 @@ public class Field {
 	 * 
 	 * @return the objectModel
 	 */
-	public DomainObjectModel getObjectModel() {
+
+	public DomainObjectModel getDomainObjectModel() {
 		if (parentField == null)
-			return objectModel;
-		return parentField.getObjectModel();
+			return domainObjectModel;
+		return parentField.getDomainObjectModel();
 	}
 
-	/**
-	 * @param objectModel
-	 *            the objectModel to set
-	 */
-	public void setObjectModel(DomainObjectModel objectModel) {
-		this.objectModel = objectModel;
+	public void setDomainObjectModel(DomainObjectModel domainObjectModel) {
+		this.domainObjectModel = domainObjectModel;
 	}
 
 }

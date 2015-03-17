@@ -67,12 +67,11 @@ public class URLLoader {
 			document = connection.get();
 		List<Field> fields = url.getPattern().getFields();
 		for (Field field : fields) {
-			extractPayload(field, document);
+			extractPayload(field, document, null);
 		}
 	}
 
 	/**
-	 * Build page template from the extracted document based on field of the
 	 * urlPattern that match the page url.
 	 * 
 	 * @return
@@ -160,11 +159,13 @@ public class URLLoader {
 	 * @param field
 	 * @param element
 	 */
-	private void extractPayload(Field field, Element element) {
+	private void extractPayload(Field field, Element element, Payload parentPayload) {
 		String selector = field.getSelector();
 		Elements elements = element.select(selector);
 		/**
-		 * check if the selector specified in the Field is to handle the parent
+		 * TODO change this description because of the update of the selecting
+		 * strategy of the selector made in the begining of this method. check
+		 * if the selector specified in the Field is to handle the parent
 		 * element that will contain the list of payloads in the document
 		 */
 		if (field.isSelectorForParentElement() && elements.first() != null) {
@@ -175,16 +176,16 @@ public class URLLoader {
 
 		if (!field.isManyElements()) {
 			Element innerElmnt = elements.first();
-			Payload payload = preparePayload(innerElmnt, field, url);
+			Payload payload = preparePayload(innerElmnt, field, url, parentPayload);
 			field.getPayloads().add(payload);
 			url.getPayloads().add(payload);
-			extractSubPayloads(field, innerElmnt);
+			extractSubPayloads(payload, innerElmnt);
 		} else {
 			for (Element innerElmnt : elements) {
-				Payload payload = preparePayload(innerElmnt, field, url);
+				Payload payload = preparePayload(innerElmnt, field, url, parentPayload);
 				field.getPayloads().add(payload);
 				url.getPayloads().add(payload);
-				extractSubPayloads(field, innerElmnt);
+				extractSubPayloads(payload, innerElmnt);
 			}
 		}
 
@@ -194,23 +195,23 @@ public class URLLoader {
 	 * Extract payloads from the <code>element</code> that match the subFields
 	 * of the <code>field</code> passed as parameter
 	 * 
-	 * @param field
+	 * @param payload
 	 * @param element
 	 */
-	private void extractSubPayloads(Field field, Element element) {
-		for (Field subField : field.getSubFields()) {
-			extractPayload(subField, element);
+	private void extractSubPayloads(Payload payload, Element element) {
+		for (Field subField : payload.getField().getSubFields()) {
+			extractPayload(subField, element, payload);
 		}
 	}
 
-	private Payload preparePayload(Element element, Field field, URL url) {
+	private Payload preparePayload(Element element, Field field, URL url, Payload parentPayload) {
 		String payloadValue;
 		if (field.getContentSelector() != null) {
 			String contentSelector = field.getContentSelector();
 			payloadValue = element.select(contentSelector).text();
 		} else
 			payloadValue = element.text();
-		Payload payload = new Payload(payloadValue, field, url);
+		Payload payload = new Payload(payloadValue, field, url, parentPayload);
 		return payload;
 	}
 
