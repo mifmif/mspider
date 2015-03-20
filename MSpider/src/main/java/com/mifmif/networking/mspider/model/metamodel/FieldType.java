@@ -26,5 +26,5 @@ package com.mifmif.networking.mspider.model.metamodel;
  *
  */
 public enum FieldType {
-	LONG, DOUBLE, TEXT, IMAGE, BINARY;
+	LONG, NUMBER, TEXT, IMAGE, BINARY;
 }

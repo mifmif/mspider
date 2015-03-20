@@ -16,12 +16,14 @@
  */
 package com.mifmif.networking.mspider.service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Connection;
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -57,18 +59,23 @@ public class URLLoader {
 	 * @throws IOException
 	 */
 	public void load() throws IOException {
-		connection = Jsoup.connect(url.getFullUrl());
-		setHeaders();
-		setCookies();
-		setParameters();
-		if (url.getPattern().isPostRequest())
+		initConnection(url.getFullUrl());
+		if (url.getPattern().isPostRequest()) {
 			document = connection.post();
-		else
+		} else {
 			document = connection.get();
+		}
 		List<Field> fields = url.getPattern().getFields();
 		for (Field field : fields) {
 			extractPayload(field, document, null);
 		}
+	}
+
+	private void initConnection(String url) {
+		connection = Jsoup.connect(url);
+		setHeaders();
+		setCookies();
+		setParameters();
 	}
 
 	/**
@@ -204,13 +211,56 @@ public class URLLoader {
 		}
 	}
 
+	private String loadImage(Element imgElmt) {
+		String imgLocalPath;
+		String imgUrl = imgElmt.attr("src");
+		String name = imgUrl.replaceAll("(.+?)([^/\\\\]+\\.jpg)", "$2");
+		imgLocalPath = "images/" + name;
+		initConnection(imgUrl);
+		// Open a URL Stream
+		try {
+			Response resultImageResponse = connection.ignoreContentType(true).execute();
+
+			// output here
+			FileOutputStream out = (new FileOutputStream(new java.io.File(imgLocalPath)));
+			out.write(resultImageResponse.bodyAsBytes()); // resultImageResponse.body()
+															// is where the
+															// image's
+															// contents are.
+			out.close();
+		} catch (Exception exception) {
+
+		}
+		return imgLocalPath;
+	}
+
+	String loadBinary(Element payloadElement) {
+		return null;
+	}
+
 	private Payload preparePayload(Element element, Field field, URL url, Payload parentPayload) {
-		String payloadValue;
+		String payloadValue = "";
+		Element payloadElement = null;
 		if (field.getContentSelector() != null) {
 			String contentSelector = field.getContentSelector();
-			payloadValue = element.select(contentSelector).text();
-		} else
-			payloadValue = element.text();
+			payloadElement = element.select(contentSelector).first();
+		} else {
+			payloadElement = element;
+		}
+		switch (field.getType()) {
+		case IMAGE:
+			payloadValue = loadImage(payloadElement);
+			break;
+		case BINARY:
+			payloadValue = loadBinary(payloadElement);
+			break;
+		case NUMBER:
+		case LONG:
+		case TEXT:
+		default:
+			payloadValue = payloadElement.text();
+			break;
+		}
 		Payload payload = new Payload(payloadValue, field, url, parentPayload);
 		return payload;
 	}
