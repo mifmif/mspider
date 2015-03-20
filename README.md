@@ -8,7 +8,7 @@ and navigate over several links in the web sites contents based on a set of patt
 -
 
 MegaSpider is based on a well defined MetaModel that present in a high level the abstract presentation of a web site, it focus on the  generic composition of web sites.
-
+![MegaSpider Class Diagram](MSpider/Mspider Model.png?raw=true "MegaSpider Class Diagram")
 **How to use it :**
 -
 
